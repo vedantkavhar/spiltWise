@@ -1,0 +1,2 @@
+# spiltWise
+Expense Tracker Application
