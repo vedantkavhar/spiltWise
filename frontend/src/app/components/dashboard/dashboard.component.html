@@ -1,21 +1,16 @@
 <div class="dashboard-container">
-  <div class="background-shapes">
-    <div class="shape"></div>
-    <div class="shape"></div>
-    <div class="shape"></div>
-  </div>
   <header>
-    <h1>Spendwise</h1>
+    <h1 routerLink="/">Spendwise</h1>
     <nav>
       <span class="nav-username" *ngIf="user">Hello, {{ user.username }}!</span>
       <a routerLink="/profile" class="nav-link">Profile</a>
       <a routerLink="/spend-ratio" class="nav-link">Spend Ratios</a>
-      <button class="logout-btn" (click)="logout()">Logout</button>
+      <button class="action-btn logout-btn" (click)="logout()">Logout</button>
     </nav>
   </header>
   <div class="content-wrapper">
     <aside class="sidebar">
-      <div class="card" data-tilt data-tilt-max="15" data-tilt-glare data-tilt-max-glare="0.5">
+      <div class="card form-card">
         <h3>{{ editingExpense ? 'Edit Expense' : 'Add Expense' }}</h3>
         <form (ngSubmit)="editingExpense ? updateExpense() : addExpense()" #expenseForm="ngForm">
           <div class="form-group">
@@ -46,34 +41,16 @@
             <input type="text" id="description" [(ngModel)]="formExpense.description" name="description" required placeholder="Enter description" />
           </div>
           <div class="form-actions">
-            <button type="submit" [disabled]="!expenseForm.valid">{{ editingExpense ? 'Update' : 'Add' }}</button>
-            <button *ngIf="editingExpense" type="button" (click)="cancelEdit()">Cancel</button>
+            <button type="submit" class="action-btn submit-btn" [disabled]="!expenseForm.valid">{{ editingExpense ? 'Update' : 'Add' }}</button>
+            <button *ngIf="editingExpense" type="button" class="action-btn cancel-btn" (click)="cancelEdit()">Cancel</button>
           </div>
         </form>
-      </div>
-      <div class="card" data-tilt data-tilt-max="15" data-tilt-glare data-tilt-max-glare="0.5" *ngIf="formExpense.type === 'Expense'">
-        <h3>Filter Expenses</h3>
-        <div class="filter-group">
-          <label for="filterCategory">Category</label>
-          <select id="filterCategory" [(ngModel)]="selectedCategory" (ngModelChange)="filterExpenses()">
-            <option *ngFor="let category of categories" [value]="category">
-              {{ category }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="card" data-tilt data-tilt-max="15" data-tilt-glare data-tilt-max-glare="0.5">
-        <h3>Download Reports</h3>
-        <div class="download-buttons">
-          <button (click)="downloadPDF()">📄 PDF</button>
-          <button (click)="downloadExcel()">📊 Excel</button>
-        </div>
       </div>
     </aside>
     <main class="main-content">
       <h2>Your Expenses</h2>
       <div *ngIf="error" class="error">{{ error }}</div>
-      <div class="card" data-tilt data-tilt-max="15" data-tilt-glare data-tilt-max-glare="0.5">
+      <div class="card">
         <h3>Dashboard Overview</h3>
         <p class="overview-text">Track your spending effortlessly.</p>
         <div class="stat-grid">
@@ -87,8 +64,16 @@
           </div>
         </div>
       </div>
-      <div class="card" data-tilt data-tilt-max="15" data-tilt-glare data-tilt-max-glare="0.5">
+      <div class="card">
         <h3>Expense History</h3>
+        <div class="filter-group" *ngIf="formExpense.type === 'Expense'">
+          <label for="filterCategory">Filter by Category</label>
+          <select id="filterCategory" [(ngModel)]="selectedCategory" (ngModelChange)="filterExpenses()">
+            <option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </option>
+          </select>
+        </div>
         <div class="expense-list">
           <table *ngIf="expenses.length; else noExpenses">
             <thead>
@@ -109,8 +94,8 @@
                 <td>{{ expense.description }}</td>
                 <td>{{ expense.date | date:'d MMMM y' }}</td>
                 <td>
-                  <button (click)="editExpense(expense)">Edit</button>
-                  <button (click)="deleteExpense(expense._id)">Delete</button>
+                  <button class="action-btn edit-btn" (click)="editExpense(expense)">Edit</button>
+                  <button class="action-btn delete-btn" (click)="deleteExpense(expense._id)">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -119,18 +104,11 @@
             <p class="no-data">No expenses found. Add one above!</p>
           </ng-template>
         </div>
+        <div class="download-buttons">
+          <button class="action-btn pdf-btn" (click)="downloadPDF()">PDF</button>
+          <button class="action-btn excel-btn" (click)="downloadExcel()">Excel</button>
+        </div>
       </div>
     </main>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
-        max: 15,
-        speed: 400,
-        glare: true,
-        'max-glare': 0.5,
-      });
-    });
-  </script>
 </div>
