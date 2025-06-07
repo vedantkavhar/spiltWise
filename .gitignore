@@ -1,0 +1,22 @@
+# Node.js (backend)
+backend/node_modules/
+backend/.env
+backend/dist/
+backend/logs/
+
+# Angular (frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.env
+
+# Common
+*.log
+.env
+.DS_Store
+Thumbs.db
+
+# Optional: IDEs and editors
+.vscode/
+.idea/
+*.swp

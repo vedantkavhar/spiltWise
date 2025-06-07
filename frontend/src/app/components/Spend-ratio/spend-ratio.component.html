@@ -1,0 +1,55 @@
+<div class="spend-ratio-container">
+  <header>
+    <h1>Spendwise</h1>
+    <nav>
+      <a routerLink="/dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/profile" class="nav-link">Profile</a>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </nav>
+  </header>
+  <main>
+    <h2>Spend & Expense Ratio</h2>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="!summary" class="loading">Loading data...</div>
+    <div class="bento-grid" *ngIf="summary">
+      <div class="bento-item chart-item">
+        <h3>Expense Breakdown</h3>
+        <div class="chart-container">
+          <canvas baseChart
+            [data]="pieChartData"
+            [type]="pieChartType"
+            [options]="pieChartOptions"
+          ></canvas>
+        </div>
+      </div>
+      <div class="bento-item summary-item">
+        <h3>Summary</h3>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <p class="stat-label">Total Expenses</p>
+            <p class="stat-value">{{ summary.total | currency:'INR' }}</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-label">Number of Expenses</p>
+            <p class="stat-value">{{ summary.count }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="bento-item category-item">
+        <h3>Category Ratios</h3>
+        <div class="category-grid" *ngIf="summary.byCategory.length; else noData">
+          <div class="category-card" *ngFor="let cat of summary.byCategory">
+            <div class="category-title">
+              <span class="category-name">{{ cat.category }}</span>
+              <span class="category-amount">{{ cat.total | currency:'INR' }}</span>
+            </div>
+            <p class="category-percentage">{{ (cat.total / summary.total * 100) | number:'1.2-2' }}%</p>
+          </div>
+        </div>
+        <ng-template #noData>
+          <p class="no-data">No expense data available.</p>
+        </ng-template>
+      </div>
+    </div>
+  </main>
+</div>
