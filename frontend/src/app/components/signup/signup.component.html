@@ -1,54 +1,9 @@
-<!-- <div class="auth-container">
-    <div class="auth-card">
-      <h2>Sign Up</h2>
-      <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            [(ngModel)]="username"
-            name="username"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            [(ngModel)]="email"
-            name="email"
-            required
-            email
-          />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            [(ngModel)]="password"
-            name="password"
-            required
-          />
-        </div>
-        <button type="submit" [disabled]="!signupForm.valid">Sign Up</button>
-        <p>
-          Already have an account? <a routerLink="/signin">Sign In</a>
-        </p>
-        <p class="error" *ngIf="error">{{ error }}</p>
-      </form>
-    </div>
-  </div> -->
-
-  <div class="auth-container">
+<div class="auth-container">
   <div class="auth-card">
-    <h2>Sign Up</h2>
+    <h2 class="auth-title">Join Spendwise</h2>
     
     <form (ngSubmit)="onSubmit()" #signupForm="ngForm">
       <div class="form-group">
-        <label for="username">Username</label>
         <input
           type="text"
           id="username"
@@ -58,15 +13,15 @@
           minlength="3"
           #usernameField="ngModel"
           [class.invalid]="usernameField.invalid && usernameField.touched"
+          placeholder="Enter your username"
         />
         <div class="field-error" *ngIf="usernameField.invalid && usernameField.touched">
           <small *ngIf="usernameField.errors?.['required']">Username is required</small>
-          <small *ngIf="usernameField.errors?.['minlength']">Username must be at least 3 characters</small>
+          <small *ngIf="usernameField.errors?.['minlength']">At least 3 characters</small>
         </div>
       </div>
       
       <div class="form-group">
-        <label for="email">Email</label>
         <input
           type="email"
           id="email"
@@ -76,15 +31,15 @@
           email
           #emailField="ngModel"
           [class.invalid]="emailField.invalid && emailField.touched"
+          placeholder="Enter your email"
         />
         <div class="field-error" *ngIf="emailField.invalid && emailField.touched">
           <small *ngIf="emailField.errors?.['required']">Email is required</small>
-          <small *ngIf="emailField.errors?.['email']">Please enter a valid email address</small>
+          <small *ngIf="emailField.errors?.['email']">Enter a valid email</small>
         </div>
       </div>
       
       <div class="form-group">
-        <label for="password">Password</label>
         <input
           type="password"
           id="password"
@@ -94,15 +49,15 @@
           minlength="6"
           #passwordField="ngModel"
           [class.invalid]="passwordField.invalid && passwordField.touched"
+          placeholder="Enter your password"
         />
         <div class="field-error" *ngIf="passwordField.invalid && passwordField.touched">
           <small *ngIf="passwordField.errors?.['required']">Password is required</small>
-          <small *ngIf="passwordField.errors?.['minlength']">Password must be at least 6 characters</small>
+          <small *ngIf="passwordField.errors?.['minlength']">At least 6 characters</small>
         </div>
       </div>
       
       <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
         <input
           type="password"
           id="confirmPassword"
@@ -111,9 +66,10 @@
           required
           #confirmPasswordField="ngModel"
           [class.invalid]="confirmPasswordField.invalid && confirmPasswordField.touched || passwordMismatch"
+          placeholder="Confirm your password"
         />
         <div class="field-error" *ngIf="confirmPasswordField.invalid && confirmPasswordField.touched">
-          <small *ngIf="confirmPasswordField.errors?.['required']">Please confirm your password</small>
+          <small *ngIf="confirmPasswordField.errors?.['required']">Confirmation required</small>
         </div>
         <div class="field-error" *ngIf="passwordMismatch && confirmPasswordField.touched">
           <small>Passwords do not match</small>
@@ -124,8 +80,10 @@
         type="submit" 
         [disabled]="!signupForm.valid || passwordMismatch || isLoading"
         [class.loading]="isLoading"
+        class="action-btn submit-btn"
       >
         <span *ngIf="!isLoading">Sign Up</span>
+        <span *ngIf="isLoading" class="spinner"></span>
         <span *ngIf="isLoading">Signing Up...</span>
       </button>
       
@@ -133,43 +91,5 @@
         Already have an account? <a routerLink="/signin">Sign In</a>
       </p>
     </form>
-  </div>
-</div>
-
-<!-- Success Popup Modal -->
-<div class="modal-overlay" *ngIf="showSuccessModal" (click)="closeSuccessModal()">
-  <div class="modal-content success-modal" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <div class="success-icon">✓</div>
-      <h3>Success!</h3>
-    </div>
-    <div class="modal-body">
-      <p>{{ successMessage }}</p>
-      <div class="auto-close-info">
-        <small>This will close automatically in a few seconds...</small>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="modal-btn success-btn" (click)="closeSuccessModal()">Continue Now</button>
-    </div>
-  </div>
-</div>
-
-<!-- Error Popup Modal -->
-<div class="modal-overlay" *ngIf="showErrorModal" (click)="closeErrorModal()">
-  <div class="modal-content error-modal" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <div class="error-icon">!</div>
-      <h3>Error</h3>
-    </div>
-    <div class="modal-body">
-      <p>{{ error }}</p>
-      <div class="auto-close-info">
-        <small>This will close automatically in a few seconds...</small>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="modal-btn error-btn" (click)="closeErrorModal()">Try Again Now</button>
-    </div>
   </div>
 </div>
