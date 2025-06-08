@@ -41,7 +41,7 @@ export class SigninComponent {
         // Wait for 3 seconds (or your toast duration) before navigating
       setTimeout(() => {
         this.router.navigate(['/dashboard']);
-      }, 3000); // adjust to match toast display duration
+      }, 2000); // adjust to match toast display duration
     
         // this.router.navigate(['/dashboard']);
       },

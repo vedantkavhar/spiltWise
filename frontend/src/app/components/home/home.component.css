@@ -172,17 +172,16 @@
   background-repeat: no-repeat;
   background-position: center;
 }
-
 .track-icon {
-  background: url('https://img.icons8.com/?size=48&id=59894&format=png') center/contain no-repeat;
+  background: url('https://api.iconify.design/ph:trend-up.svg?color=%2300ddeb') center/contain no-repeat;
 }
 
 .split-icon {
-  background: url('https://img.icons8.com/?size=48&id=115333&format=png') center/contain no-repeat;
+  background: url('https://api.iconify.design/ph:arrows-split.svg?color=%23ff2e63') center/contain no-repeat;
 }
 
 .settle-icon {
-  background: url('https://img.icons8.com/?size=48&id=12799&format=png') center/contain no-repeat;
+  background: url('https://api.iconify.design/ph:handshake.svg?color=%232fff8c') center/contain no-repeat;
 }
 
 .feature-card h3 {

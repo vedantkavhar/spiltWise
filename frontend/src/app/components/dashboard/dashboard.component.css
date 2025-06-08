@@ -113,6 +113,7 @@ nav {
 /* Sidebar */
 .sidebar {
   width: 250px;
+  border-radius: 9px;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(8px);
   padding: 1rem;
@@ -188,6 +189,11 @@ h2 {
 .sidebar .card:nth-child(1) { animation-delay: 0.1s; }
 .main-content .card:nth-child(2) { animation-delay: 0.2s; }
 .main-content .card:nth-child(3) { animation-delay: 0.4s; }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
 
 /* Animations */
 @keyframes fadeIn {
@@ -280,27 +286,16 @@ form {
 
 .form-group input,
 .form-group select {
-  padding: 0.35rem 1.5rem 0.35rem 0.6rem;
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  background: none;
+  color: #e0e0e0;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  font-size: 0.82rem;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(6px);
-  color: #e0e0e0;
-  width: 100%;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  /* background-image: linear-gradient(135deg, #00ddeb, #00b7c3); */
-  background-repeat: no-repeat;
-  background-position: right 0.5rem center;
-  background-size: 10px 6px;
-  background-clip: padding-box;
-  -webkit-background-clip: padding-box;
-  position: relative;
+  padding: 0.35rem 0.6rem;
 }
+
 
 .form-group select::after {
   content: '';
@@ -355,27 +350,16 @@ form {
 }
 
 .filter-group select {
-  padding: 0.35rem 1.5rem 0.35rem 0.6rem;
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  background: none;
+  color: #e0e0e0;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  font-size: 0.82rem;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(6px);
-  color: #e0e0e0;
-  width: 150px;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-image: linear-gradient(135deg, #00ddeb, #00b7c3);
-  background-repeat: no-repeat;
-  background-position: right 0.5rem center;
-  background-size: 10px 6px;
-  background-clip: padding-box;
-  -webkit-background-clip: padding-box;
-  position: relative;
+  padding: 0.35rem 0.6rem;
 }
+
 
 .filter-group select::after {
   content: '';
