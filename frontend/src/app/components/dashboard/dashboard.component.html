@@ -1,11 +1,16 @@
 <div class="dashboard-container">
   <header>
-    <h1 routerLink="/">Spendwise</h1>
+    
+    <!-- <a routerLink="/" >Spendwise</a> -->
+    <h1><a routerLink="/" >Spendwise</a></h1>
     <nav>
       <span class="nav-username" *ngIf="user">Hello, {{ user.username }}!</span>
       <a routerLink="/profile" class="nav-link">Profile</a>
       <a routerLink="/spend-ratio" class="nav-link">Spend Ratios</a>
-      <button class="action-btn logout-btn" (click)="logout()">Logout</button>
+      <button class="action-btn logout-btn" (click)="logout()" title="Logout">
+        <!-- <i class="fas fa-sign-out-alt"></i> -->
+         logout
+      </button>
     </nav>
   </header>
   <div class="content-wrapper">
@@ -13,13 +18,13 @@
       <div class="card form-card">
         <h3>{{ editingExpense ? 'Edit Expense' : 'Add Expense' }}</h3>
         <form (ngSubmit)="editingExpense ? updateExpense() : addExpense()" #expenseForm="ngForm">
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label for="type">Type</label>
             <select id="type" [(ngModel)]="formExpense.type" name="type" required>
               <option value="Income">Income</option>
               <option value="Expense">Expense</option>
             </select>
-          </div>
+          </div> -->
           <div class="form-group" *ngIf="formExpense.type === 'Expense'">
             <label for="category">Category</label>
             <select id="category" [(ngModel)]="formExpense.category" name="category" required>
@@ -41,8 +46,15 @@
             <input type="text" id="description" [(ngModel)]="formExpense.description" name="description" required placeholder="Enter description" />
           </div>
           <div class="form-actions">
-            <button type="submit" class="action-btn submit-btn" [disabled]="!expenseForm.valid">{{ editingExpense ? 'Update' : 'Add' }}</button>
-            <button *ngIf="editingExpense" type="button" class="action-btn cancel-btn" (click)="cancelEdit()">Cancel</button>
+            <button type="submit" class="action-btn submit-btn" [disabled]="!expenseForm.valid" [title]="editingExpense ? 'Update' : 'Add'">
+              <!-- <i [ngClass]="editingExpense ? 'fas fa-check' : 'fas fa-plus'"></i> -->
+              {{ editingExpense ? 'Update' : 'Add' }}
+
+            </button>
+            <button *ngIf="editingExpense" type="button" class="action-btn cancel-btn" (click)="cancelEdit()" title="Cancel">
+              <!-- <i class="fas fa-times"></i> -->
+               cancel
+            </button>
           </div>
         </form>
       </div>
@@ -94,8 +106,14 @@
                 <td>{{ expense.description }}</td>
                 <td>{{ expense.date | date:'d MMMM y' }}</td>
                 <td>
-                  <button class="action-btn edit-btn" (click)="editExpense(expense)">Edit</button>
-                  <button class="action-btn delete-btn" (click)="deleteExpense(expense._id)">Delete</button>
+                  <button class="action-btn edit-btn" (click)="editExpense(expense)" title="Edit">
+                    <!-- <i class="fas fa-edit"></i> -->
+                     Edit
+                  </button>
+                  <button class="action-btn delete-btn" (click)="deleteExpense(expense._id)" title="Delete">
+                    <!-- <i class="fas fa-trash"></i> -->
+                     delete
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -105,8 +123,17 @@
           </ng-template>
         </div>
         <div class="download-buttons">
-          <button class="action-btn pdf-btn" (click)="downloadPDF()">PDF</button>
-          <button class="action-btn excel-btn" (click)="downloadExcel()">Excel</button>
+          <!-- <label >Filter by Category</label> -->
+          <h2>download reports</h2>
+
+          <button class="action-btn pdf-btn" (click)="downloadPDF()" title="Download PDF">
+            <!-- <i class="fas fa-file-pdf"></i> -->
+             pdf
+          </button>
+          <button class="action-btn excel-btn" (click)="downloadExcel()" title="Download Excel">
+            <!-- <i class="fas fa-file-excel"></i> -->
+             excel
+          </button>
         </div>
       </div>
     </main>

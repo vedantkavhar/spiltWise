@@ -280,23 +280,54 @@ form {
 
 .form-group input,
 .form-group select {
-  padding: 0.4rem 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.35rem 1.5rem 0.35rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  font-size: 0.85rem;
-  background: rgba(255, 255, 255, 0.05);
-  color: #d0d0d0;
+  font-size: 0.82rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(6px);
+  color: #e0e0e0;
   width: 100%;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  /* background-image: linear-gradient(135deg, #00ddeb, #00b7c3); */
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 10px 6px;
+  background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  position: relative;
+}
+
+.form-group select::after {
+  content: '';
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #00ddeb;
+  transform: translateY(-50%);
+}
+
+.form-group select option {
+  background: #1a1a2e;
+  color: #e0e0e0;
+  font-size: 0.82rem;
+  padding: 0.5rem;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #00ddeb;
-  box-shadow: 0 0 0 2px rgba(0, 221, 235, 0.2);
+  border: 1px solid #00ddeb;
+  box-shadow: inset 0 0 6px rgba(0, 221, 235, 0.3);
 }
-
 .form-actions {
   display: flex;
   gap: 0.6rem;
@@ -324,20 +355,52 @@ form {
 }
 
 .filter-group select {
-  padding: 0.4rem 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.35rem 1.5rem 0.35rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  font-size: 0.85rem;
-  background: rgba(255, 255, 255, 0.05);
-  color: #d0d0d0;
+  font-size: 0.82rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(6px);
+  color: #e0e0e0;
   width: 150px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-image: linear-gradient(135deg, #00ddeb, #00b7c3);
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 10px 6px;
+  background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  position: relative;
+}
+
+.filter-group select::after {
+  content: '';
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #00ddeb;
+  transform: translateY(-50%);
+}
+
+.filter-group select option {
+  background: #1a1a2e;
+  color: #e0e0e0;
+  font-size: 0.82rem;
+  padding: 0.5rem;
 }
 
 .filter-group select:focus {
   outline: none;
-  border-color: #00ddeb;
-  box-shadow: 0 0 0 2px rgba(0, 221, 235, 0.2);
+  border: 1px solid #00ddeb;
+  box-shadow: inset 0 0 6px rgba(0, 221, 235, 0.3);
 }
 
 /* Expense List */
@@ -629,21 +692,20 @@ td .action-btn {
     font-size: 0.75rem;
   }
 
-  .form-group input, .form-group select {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.5rem;
-  }
+  .form-group input,.form-group select {
+  font-size: 0.8rem;
+  padding: 0.3rem 1.4rem 0.3rem 0.5rem;
+}
 
   .filter-group label {
     font-size: 0.8rem;
   }
 
   .filter-group select {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.5rem;
-    width: 120px;
-  }
-
+  font-size: 0.8rem;
+  padding: 0.3rem 1.4rem 0.3rem 0.5rem;
+  width: 120px;
+}
   .stat-value {
     font-size: 1rem;
   }
