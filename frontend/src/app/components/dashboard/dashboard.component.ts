@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
@@ -12,8 +11,6 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { format } from 'date-fns';
 
-
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -24,6 +21,7 @@ import { format } from 'date-fns';
 export class DashboardComponent {
   user: { id: string; username: string; email: string } | null = null;
   expenses: Expense[] = [];
+  originalExpenses: Expense[] = [];
   formExpense: Partial<Expense> = {
     date: '',
     type: 'Expense',
@@ -35,6 +33,11 @@ export class DashboardComponent {
   error: string = '';
   categories: string[] = [];
   selectedCategory: string = 'All';
+  selectedPeriod: string = 'All';
+  // Added property for search query
+  searchQuery: string = '';
+  // Added property for sort option, defaulting to newest first
+  sortOption: string = 'date-desc';
 
   constructor(
     private authService: AuthService,
@@ -64,9 +67,10 @@ export class DashboardComponent {
   }
 
   loadExpenses(): void {
-    this.expenseService.getExpenses(this.selectedCategory).subscribe({
+    this.expenseService.getExpenses('All').subscribe({
       next: (expenses) => {
-        this.expenses = expenses;
+        this.originalExpenses = expenses;
+        this.filterExpenses();
       },
       error: (err) => {
         this.error = err.error?.message || 'Failed to load expenses';
@@ -76,7 +80,60 @@ export class DashboardComponent {
   }
 
   filterExpenses(): void {
-    this.loadExpenses();
+    let filtered = [...this.originalExpenses];
+
+    // Filter by Category
+    if (this.selectedCategory !== 'All') {
+      filtered = filtered.filter(
+        (expense) => expense.category === this.selectedCategory
+      );
+    }
+
+    // Filter by Period
+    const today = new Date('2025-06-09');
+    if (this.selectedPeriod !== 'All') {
+      const timeRange = this.selectedPeriod === 'Weekly' ? 7 : 30;
+      const startDate = new Date(today);
+      startDate.setDate(today.getDate() - timeRange);
+
+      filtered = filtered.filter((expense) => {
+        const expenseDate = new Date(expense.date);
+        return expenseDate >= startDate && expenseDate <= today;
+      });
+    }
+
+    // Added search functionality to filter by date, price, or description
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.trim().toLowerCase();
+      filtered = filtered.filter((expense) => {
+        const formattedDate = this.formatDate(expense.date).toLowerCase();
+        const amountStr = expense.amount.toString();
+        const description = expense.description.toLowerCase();
+        return (
+          formattedDate.includes(query) ||
+          amountStr.includes(query) ||
+          description.includes(query)
+        );
+      });
+    }
+
+    // Added sorting functionality based on sortOption
+    switch (this.sortOption) {
+      case 'date-desc':
+        filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        break;
+      case 'date-asc':
+        filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        break;
+      case 'price-desc':
+        filtered.sort((a, b) => (b.amount || 0) - (a.amount || 0));
+        break;
+      case 'price-asc':
+        filtered.sort((a, b) => (a.amount || 0) - (b.amount || 0));
+        break;
+    }
+
+    this.expenses = filtered;
   }
 
   addExpense(): void {
@@ -91,17 +148,13 @@ export class DashboardComponent {
     }
 
     if (this.formExpense.type === 'Income') {
-      this.formExpense.category = "Food";
+      this.formExpense.category = 'Food';
     }
 
     this.expenseService.addExpense(this.formExpense).subscribe({
       next: (expense) => {
-        if (
-          this.selectedCategory === 'All' ||
-          expense.category === this.selectedCategory
-        ) {
-          this.expenses.push(expense);
-        }
+        this.originalExpenses.push(expense);
+        this.filterExpenses();
         this.resetForm();
         this.toastService.show('Expense added successfully', 'success');
         this.error = '';
@@ -122,19 +175,20 @@ export class DashboardComponent {
     if (!this.editingExpense || !this.editingExpense._id) return;
 
     if (this.formExpense.type === 'Income') {
-      this.formExpense.category = "stipend";
+      this.formExpense.category = 'stipend';
     }
 
     this.expenseService
       .updateExpense(this.editingExpense._id, this.formExpense)
       .subscribe({
         next: (updatedExpense) => {
-          const index = this.expenses.findIndex(
+          const index = this.originalExpenses.findIndex(
             (e) => e._id === updatedExpense._id
           );
           if (index !== -1) {
-            this.expenses[index] = updatedExpense;
+            this.originalExpenses[index] = updatedExpense;
           }
+          this.filterExpenses();
           this.resetForm();
           this.editingExpense = null;
           this.toastService.show('Expense updated successfully', 'success');
@@ -150,7 +204,10 @@ export class DashboardComponent {
   deleteExpense(expenseId: string): void {
     this.expenseService.deleteExpense(expenseId).subscribe({
       next: () => {
-        this.expenses = this.expenses.filter((e) => e._id !== expenseId);
+        this.originalExpenses = this.originalExpenses.filter(
+          (e) => e._id !== expenseId
+        );
+        this.filterExpenses();
         this.toastService.show('Expense deleted successfully', 'success');
       },
       error: (err) => {
@@ -182,17 +239,16 @@ export class DashboardComponent {
       this.router.navigate(['/signin']);
     }, 2000);
   }
-  
-formatDate(date: string): string {
-  return format(new Date(date), 'd MMMM yyyy'); 
-}
+
+  formatDate(date: string): string {
+    return format(new Date(date), 'd MMMM yyyy');
+  }
 
   downloadPDF(): void {
     const doc = new jsPDF();
     autoTable(doc, {
       head: [['Date', 'Type', 'Category', 'Amount', 'Description']],
       body: this.expenses.map((e) => [
-        // e.date,
         this.formatDate(e.date),
         e.type,
         e.category,
@@ -207,8 +263,7 @@ formatDate(date: string): string {
   downloadExcel(): void {
     const worksheet = XLSX.utils.json_to_sheet(
       this.expenses.map((e) => ({
-        // Date: e.date,
-         Date: this.formatDate(e.date),  // Format the date here
+        Date: this.formatDate(e.date),
         Type: e.type,
         Category: e.category,
         Amount: e.amount,
@@ -229,6 +284,9 @@ formatDate(date: string): string {
   }
 
   getTotalExpenses(): number {
-    return this.expenses.reduce((total, expense) => total + (expense.amount || 0), 0);
+    return this.expenses.reduce(
+      (total, expense) => total + (expense.amount || 0),
+      0
+    );
   }
 }

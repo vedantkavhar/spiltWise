@@ -194,7 +194,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 
-
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -296,7 +295,6 @@ form {
   padding: 0.35rem 0.6rem;
 }
 
-
 .form-group select::after {
   content: '';
   position: absolute;
@@ -323,6 +321,7 @@ form {
   border: 1px solid #00ddeb;
   box-shadow: inset 0 0 6px rgba(0, 221, 235, 0.3);
 }
+
 .form-actions {
   display: flex;
   gap: 0.6rem;
@@ -333,14 +332,22 @@ form {
 /* Filter Group */
 .filter-group {
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  justify-content: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
   padding: 0.5rem;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   margin-bottom: 1rem;
+}
+
+/* Updated filter-row to contain all controls in a single row */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  justify-content: space-between; /* Distributes space between controls */
+  flex-wrap: nowrap; /* Prevents wrapping on larger screens */
 }
 
 .filter-group label {
@@ -358,8 +365,8 @@ form {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   padding: 0.35rem 0.6rem;
+  width: 150px; /* Fixed width for dropdowns to ensure consistent layout */
 }
-
 
 .filter-group select::after {
   content: '';
@@ -386,6 +393,57 @@ form {
   border: 1px solid #00ddeb;
   box-shadow: inset 0 0 6px rgba(0, 221, 235, 0.3);
 }
+
+/* Styling for the search input within filter-row */
+.filter-row input {
+  padding: 0.3rem 0.5rem; /* Reduced padding for smaller size */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 0.8rem; /* Reduced font size */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(6px);
+  color: #e0e0e0;
+  width: 200px; /* Reduced width to make it small */
+  transition: all 0.3s ease;
+}
+
+.filter-row input:focus {
+  outline: none;
+  border: 1px solid #00ddeb;
+  box-shadow: inset 0 0 6px rgba(0, 221, 235, 0.3);
+}
+
+/* Removed search-row styles since all controls are now in filter-row */
+/* .search-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  justify-content: flex-end;
+}
+
+.search-row label {
+  font-size: 0.9rem;
+  color: #00ddeb;
+  font-weight: 500;
+}
+
+.search-row input {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(6px);
+  color: #e0e0e0;
+  width: 200px;
+  transition: all 0.3s ease;
+}
+
+.search-row input:focus {
+  outline: none;
+  border: 1px solid #00ddeb;
+  box-shadow: inset 0 0 6px rgba(0, 221, 235, 0.3);
+} */
 
 /* Expense List */
 .expense-list {
@@ -604,6 +662,21 @@ td .action-btn {
   .main-content {
     margin-left: 200px;
   }
+
+  /* Adjusted filter-row for smaller screens */
+  .filter-row {
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: flex-start; /* Align items to the start when wrapping */
+    gap: 0.5rem; /* Reduce gap for better spacing */
+  }
+
+  .filter-group select {
+    width: 130px; /* Slightly smaller dropdowns */
+  }
+
+  .filter-row input {
+    width: 180px; /* Slightly smaller search input */
+  }
 }
 
 @media (max-width: 768px) {
@@ -653,6 +726,20 @@ td .action-btn {
     padding: 0.3rem 0.6rem;
     font-size: 0.7rem;
   }
+
+  /* Further adjust filter-row for medium screens */
+  .filter-row {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .filter-group select {
+    width: 120px; /* Smaller dropdowns */
+  }
+
+  .filter-row input {
+    width: 180px; /* Slightly smaller search input */
+  }
 }
 
 @media (max-width: 480px) {
@@ -676,20 +763,28 @@ td .action-btn {
     font-size: 0.75rem;
   }
 
-  .form-group input,.form-group select {
-  font-size: 0.8rem;
-  padding: 0.3rem 1.4rem 0.3rem 0.5rem;
-}
+  .form-group input, .form-group select {
+    font-size: 0.8rem;
+    padding: 0.3rem 1.4rem 0.3rem 0.5rem;
+  }
 
   .filter-group label {
     font-size: 0.8rem;
   }
 
   .filter-group select {
-  font-size: 0.8rem;
-  padding: 0.3rem 1.4rem 0.3rem 0.5rem;
-  width: 120px;
-}
+    font-size: 0.8rem;
+    padding: 0.3rem 1.4rem 0.3rem 0.5rem;
+    width: 110px; /* Even smaller dropdowns */
+  }
+
+  /* Adjusted search input for small screens */
+  .filter-row input {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.4rem;
+    width: 150px; /* Even smaller for small screens */
+  }
+
   .stat-value {
     font-size: 1rem;
   }
