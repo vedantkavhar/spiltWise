@@ -1,14 +1,11 @@
 <div class="dashboard-container">
   <header>
-    
-    <!-- <a routerLink="/" >Spendwise</a> -->
-    <h1><a routerLink="/" >Spendwise</a></h1>
+    <h1><a routerLink="/">Spendwise</a></h1>
     <nav>
       <span class="nav-username" *ngIf="user">Hello, {{ user.username }}!</span>
       <a routerLink="/profile" class="nav-link">Profile</a>
       <a routerLink="/spend-ratio" class="nav-link">Spend Ratios</a>
       <button class="action-btn logout-btn" (click)="logout()" title="Logout">
-        <!-- <i class="fas fa-sign-out-alt"></i> -->
          logout
       </button>
     </nav>
@@ -18,13 +15,6 @@
       <div class="card form-card">
         <h3>{{ editingExpense ? 'Edit Expense' : 'Add Expense' }}</h3>
         <form (ngSubmit)="editingExpense ? updateExpense() : addExpense()" #expenseForm="ngForm">
-          <!-- <div class="form-group">
-            <label for="type">Type</label>
-            <select id="type" [(ngModel)]="formExpense.type" name="type" required>
-              <option value="Income">Income</option>
-              <option value="Expense">Expense</option>
-            </select>
-          </div> -->
           <div class="form-group" *ngIf="formExpense.type === 'Expense'">
             <label for="category">Category</label>
             <select id="category" [(ngModel)]="formExpense.category" name="category" required>
@@ -47,12 +37,9 @@
           </div>
           <div class="form-actions">
             <button type="submit" class="action-btn submit-btn" [disabled]="!expenseForm.valid" [title]="editingExpense ? 'Update' : 'Add'">
-              <!-- <i [ngClass]="editingExpense ? 'fas fa-check' : 'fas fa-plus'"></i> -->
               {{ editingExpense ? 'Update' : 'Add' }}
-
             </button>
             <button *ngIf="editingExpense" type="button" class="action-btn cancel-btn" (click)="cancelEdit()" title="Cancel">
-              <!-- <i class="fas fa-times"></i> -->
                cancel
             </button>
           </div>
@@ -79,12 +66,30 @@
       <div class="card">
         <h3>Expense History</h3>
         <div class="filter-group" *ngIf="formExpense.type === 'Expense'">
-          <label for="filterCategory">Filter by Category</label>
-          <select id="filterCategory" [(ngModel)]="selectedCategory" (ngModelChange)="filterExpenses()">
-            <option *ngFor="let category of categories" [value]="category">
-              {{ category }} 
-            </option>
-          </select>
+          <!-- Combined search, category filter, period filter, and sort into a single row -->
+          <div class="filter-row">
+            <label for="filterCategory">Filter by Category</label>
+            <select id="filterCategory" [(ngModel)]="selectedCategory" (ngModelChange)="filterExpenses()">
+              <option *ngFor="let category of categories" [value]="category">
+                {{ category }}
+              </option>
+            </select>
+            <label for="filterPeriod">Filter by Period</label>
+            <select id="filterPeriod" [(ngModel)]="selectedPeriod" (ngModelChange)="filterExpenses()">
+              <option value="All">All Time</option>
+              <option value="Weekly">Weekly</option>
+              <option value="Monthly">Monthly</option>
+            </select>
+            <label for="sort">Sort</label>
+            <select id="sort" [(ngModel)]="sortOption" (ngModelChange)="filterExpenses()">
+              <option value="date-desc">Date (Newest to Oldest)</option>
+              <option value="date-asc">Date (Oldest to Newest)</option>
+              <option value="price-desc">Price (Highest to Lowest)</option>
+              <option value="price-asc">Price (Lowest to Highest)</option>
+            </select>
+            <label for="search">Search</label>
+            <input type="text" id="search" [(ngModel)]="searchQuery" (ngModelChange)="filterExpenses()" placeholder="Search by date, price, or description" />
+          </div>
         </div>
         <div class="expense-list">
           <table *ngIf="expenses.length; else noExpenses">
@@ -107,11 +112,9 @@
                 <td>{{ expense.date | date:'d MMMM y' }}</td>
                 <td>
                   <button class="action-btn edit-btn" (click)="editExpense(expense)" title="Edit">
-                    <!-- <i class="fas fa-edit"></i> -->
                      Edit
                   </button>
                   <button class="action-btn delete-btn" (click)="deleteExpense(expense._id)" title="Delete">
-                    <!-- <i class="fas fa-trash"></i> -->
                      delete
                   </button>
                 </td>
@@ -123,15 +126,11 @@
           </ng-template>
         </div>
         <div class="download-buttons">
-          <!-- <label >Filter by Category</label> -->
           <h2>download reports</h2>
-
           <button class="action-btn pdf-btn" (click)="downloadPDF()" title="Download PDF">
-            <!-- <i class="fas fa-file-pdf"></i> -->
              pdf
           </button>
           <button class="action-btn excel-btn" (click)="downloadExcel()" title="Download Excel">
-            <!-- <i class="fas fa-file-excel"></i> -->
              excel
           </button>
         </div>
