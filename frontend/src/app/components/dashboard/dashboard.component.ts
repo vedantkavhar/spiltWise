@@ -109,12 +109,15 @@ export class DashboardComponent {
         const formattedDate = this.formatDate(expense.date).toLowerCase();
         const amountStr = expense.amount.toString();
         const description = expense.description.toLowerCase();
+        const category = expense.category.toLowerCase();
         return (
           formattedDate.includes(query) ||
           amountStr.includes(query) ||
-          description.includes(query)
-        );
+          description.includes(query) ||
+          category.includes(query)
+        )
       });
+
     }
 
     // Added sorting functionality based on sortOption
