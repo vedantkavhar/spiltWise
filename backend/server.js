@@ -34,6 +34,9 @@ const authRoutes = require('./routes/auth');
 const expenseRoutes = require('./routes/expenses');
 const dotenv = require('dotenv');
 const path = require('path'); // Added for path handling
+// const categoriesRoutes = require('./routes/categories');
+const categoryRoutes = require('./routes/categories');  // path may vary
+
 
 dotenv.config();
 const app = express();
@@ -46,7 +49,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Normali
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
-app.use('/api/categories', require('./routes/categories'));
+// app.use('/api/categories', require('./routes/categories'));
+// app.use('/api/categories', categoriesRoutes);
+// app.use('/api/expenses/categories', categoriesRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {

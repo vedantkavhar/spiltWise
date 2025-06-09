@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Expense, ExpenseService } from '../../services/expense.service';
+import { Category, Expense, ExpenseService } from '../../services/expense.service';
 import { ToastService } from '../../services/toast.service';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -31,7 +31,8 @@ export class DashboardComponent {
   };
   editingExpense: Expense | null = null;
   error: string = '';
-  categories: string[] = [];
+  categories: Category[] = [];
+
   selectedCategory: string = 'All';
   selectedPeriod: string = 'All';
   // Added property for search query
@@ -57,14 +58,18 @@ export class DashboardComponent {
   loadCategories(): void {
     this.expenseService.getCategories().subscribe({
       next: (categories) => {
+        console.log('Received categories:', categories);
         this.categories = categories;
       },
       error: (err) => {
-        this.error = err.error?.message || 'Failed to load categories';
-        this.toastService.show(this.error, 'error');
-      },
+        const errorMessage = err?.error?.message || 'Failed to load categories';
+        this.toastService.show(errorMessage, 'error');
+        console.error('Error loading categories:', err);
+      }
     });
   }
+
+
 
   loadExpenses(): void {
     this.expenseService.getExpenses('All').subscribe({
