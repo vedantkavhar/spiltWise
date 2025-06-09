@@ -6,7 +6,7 @@
       <a routerLink="/profile" class="nav-link">Profile</a>
       <a routerLink="/spend-ratio" class="nav-link">Spend Ratios</a>
       <button class="action-btn logout-btn" (click)="logout()" title="Logout">
-         logout
+        logout
       </button>
     </nav>
   </header>
@@ -15,32 +15,38 @@
       <div class="card form-card">
         <h3>{{ editingExpense ? 'Edit Expense' : 'Add Expense' }}</h3>
         <form (ngSubmit)="editingExpense ? updateExpense() : addExpense()" #expenseForm="ngForm">
-          <div class="form-group" *ngIf="formExpense.type === 'Expense'">
-            <label for="category">Category</label>
-            <select id="category" [(ngModel)]="formExpense.category" name="category" required>
-              <option *ngFor="let category of categories" [value]="category" [disabled]="category === 'All'">
-                {{ category }}
+          <div class="form-group">
+            <label for="category" class="form-label">Category</label>
+            <select [(ngModel)]="formExpense.category" name="category" id="category" class="form-control" required>
+              <option value="" disabled selected>Select a category</option>
+              <option *ngFor="let category of categories" [value]="category.name">
+                {{ category.name }}
               </option>
             </select>
           </div>
+
           <div class="form-group">
             <label for="amount">Amount</label>
-            <input type="number" id="amount" [(ngModel)]="formExpense.amount" name="amount" required min="0" placeholder="₹0.00" />
+            <input type="number" id="amount" [(ngModel)]="formExpense.amount" name="amount" required min="0"
+              placeholder="₹0.00" />
           </div>
           <div class="form-group">
             <label for="date">Date</label>
-            <input type="date" id="date" [(ngModel)]="formExpense.date" name="date" required />     
+            <input type="date" id="date" [(ngModel)]="formExpense.date" name="date" required />
           </div>
           <div class="form-group">
             <label for="description">Description</label>
-            <input type="text" id="description" [(ngModel)]="formExpense.description" name="description" required placeholder="Enter description" />
+            <input type="text" id="description" [(ngModel)]="formExpense.description" name="description" required
+              placeholder="Enter description" />
           </div>
           <div class="form-actions">
-            <button type="submit" class="action-btn submit-btn" [disabled]="!expenseForm.valid" [title]="editingExpense ? 'Update' : 'Add'">
+            <button type="submit" class="action-btn submit-btn" [disabled]="!expenseForm.valid"
+              [title]="editingExpense ? 'Update' : 'Add'">
               {{ editingExpense ? 'Update' : 'Add' }}
             </button>
-            <button *ngIf="editingExpense" type="button" class="action-btn cancel-btn" (click)="cancelEdit()" title="Cancel">
-               cancel
+            <button *ngIf="editingExpense" type="button" class="action-btn cancel-btn" (click)="cancelEdit()"
+              title="Cancel">
+              cancel
             </button>
           </div>
         </form>
@@ -69,9 +75,12 @@
           <!-- Combined search, category filter, period filter, and sort into a single row -->
           <div class="filter-row">
             <label for="filterCategory">Filter by Category</label>
-            <select id="filterCategory" [(ngModel)]="selectedCategory" (ngModelChange)="filterExpenses()">
-              <option *ngFor="let category of categories" [value]="category">
-                {{ category }}
+            <select [(ngModel)]="selectedCategory" name="category" id="filterCategory"
+              (ngModelChange)="filterExpenses()">
+              <option value="" disabled selected>Select a category</option>
+              <option value="All">All</option>
+              <option *ngFor="let category of categories" [value]="category.name">
+                {{ category.name }}
               </option>
             </select>
             <label for="filterPeriod">Filter by Period</label>
@@ -88,7 +97,8 @@
               <option value="price-asc">Price (Lowest to Highest)</option>
             </select>
             <label for="search">Search</label>
-            <input type="text" id="search" [(ngModel)]="searchQuery" (ngModelChange)="filterExpenses()" placeholder="Search by date, price, or description" />
+            <input type="text" id="search" [(ngModel)]="searchQuery" (ngModelChange)="filterExpenses()"
+              placeholder="Search by date, price, or description" />
           </div>
         </div>
         <div class="expense-list">
@@ -112,10 +122,10 @@
                 <td>{{ expense.date | date:'d MMMM y' }}</td>
                 <td>
                   <button class="action-btn edit-btn" (click)="editExpense(expense)" title="Edit">
-                     Edit
+                    Edit
                   </button>
                   <button class="action-btn delete-btn" (click)="deleteExpense(expense._id)" title="Delete">
-                     delete
+                    delete
                   </button>
                 </td>
               </tr>
@@ -128,10 +138,10 @@
         <div class="download-buttons">
           <h2>download reports</h2>
           <button class="action-btn pdf-btn" (click)="downloadPDF()" title="Download PDF">
-             pdf
+            pdf
           </button>
           <button class="action-btn excel-btn" (click)="downloadExcel()" title="Download Excel">
-             excel
+            excel
           </button>
         </div>
       </div>

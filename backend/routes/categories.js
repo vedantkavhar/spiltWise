@@ -1,98 +1,86 @@
+
 const express = require('express');
-  const router = express.Router();
-  const Category = require('../models/Category');
-  const authMiddleware = require('../middleware/auth');
+const router = express.Router();
+const Category = require('../models/Category');
 
-  // Get all categories for a user
-  router.get('/', authMiddleware, async (req, res) => {
-    try {
-      const categories = await Category.find({ userId: req.user.userId }).select('name');
-      res.json(categories.map((c) => c.name));
-    } catch (error) {
-      console.error('Get categories error:', error);
-      res.status(500).json({ message: 'Server error' });
+// Create a new category (POST /api/categories)
+router.post('/', async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ message: 'Category name is required' });
     }
-  });
 
-  // Add a new category
-  router.post('/', authMiddleware, async (req, res) => {
-    try {
-      const { name } = req.body;
-      if (!name) {
-        return res.status(400).json({ message: 'Category name is required' });
-      }
-
-      const existingCategory = await Category.findOne({ name, userId: req.user.userId });
-      if (existingCategory) {
-        return res.status(400).json({ message: 'Category already exists' });
-      }
-
-      const category = new Category({
-        name,
-        userId: req.user.userId,
-      });
-
-      await category.save();
-      res.status(201).json(category.name);
-    } catch (error) {
-      console.error('Add category error:', error);
-      res.status(500).json({ message: 'Server error' });
+    // Check if category already exists globally
+    const existing = await Category.findOne({ name: name.trim() });
+    if (existing) {
+      return res.status(400).json({ message: 'Category already exists' });
     }
-  });
 
-  // Update a category
-  router.put('/:name', authMiddleware, async (req, res) => {
-    try {
-      const { newName } = req.body;
-      if (!newName) {
-        return res.status(400).json({ message: 'New category name is required' });
-      }
+    const category = new Category({ name: name.trim() });
+    await category.save();
+    res.status(201).json(category);
+  } catch (error) {
+    console.error('Error creating category:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
-      const category = await Category.findOne({ name: req.params.name, userId: req.user.userId });
-      if (!category) {
-        return res.status(404).json({ message: 'Category not found' });
-      }
+// Get all categories (GET /api/categories)
+router.get('/', async (req, res) => {
+  try {
+    const categories = await Category.find().sort({ name: 1 }); // sorted by name ascending
+    res.json(categories);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
-      const existingCategory = await Category.findOne({ name: newName, userId: req.user.userId });
-      if (existingCategory) {
-        return res.status(400).json({ message: 'Category name already exists' });
-      }
+// Get a category by ID (GET /api/categories/:id)
+router.get('/:id', async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+    if (!category) return res.status(404).json({ message: 'Category not found' });
+    res.json(category);
+  } catch (error) {
+    console.error('Error fetching category:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
-      category.name = newName;
-      await category.save();
+// Update a category (PUT /api/categories/:id)
+router.put('/:id', async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name) return res.status(400).json({ message: 'Category name is required' });
 
-      // Update expenses with old category name
-      await Expense.updateMany(
-        { userId: req.user.userId, category: req.params.name },
-        { $set: { category: newName } }
-      );
+    const category = await Category.findById(req.params.id);
+    if (!category) return res.status(404).json({ message: 'Category not found' });
 
-      res.json(category.name);
-    } catch (error) {
-      console.error('Update category error:', error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
+    // Check if new name is unique
+    const existing = await Category.findOne({ name: name.trim(), _id: { $ne: req.params.id } });
+    if (existing) return res.status(400).json({ message: 'Category name already exists' });
 
-  // Delete a category
-  router.delete('/:name', authMiddleware, async (req, res) => {
-    try {
-      const category = await Category.findOneAndDelete({ name: req.params.name, userId: req.user.userId });
-      if (!category) {
-        return res.status(404).json({ message: 'Category not found' });
-      }
+    category.name = name.trim();
+    await category.save();
+    res.json(category);
+  } catch (error) {
+    console.error('Error updating category:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
-      // Set category to null for expenses using this category
-      await Expense.updateMany(
-        { userId: req.user.userId, category: req.params.name },
-        { $set: { category: null } }
-      );
+// Delete a category (DELETE /api/categories/:id)
+router.delete('/:id', async (req, res) => {
+  try {
+    const category = await Category.findByIdAndDelete(req.params.id);
+    if (!category) return res.status(404).json({ message: 'Category not found' });
+    res.json({ message: 'Category deleted' });
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
-      res.json({ message: 'Category deleted' });
-    } catch (error) {
-      console.error('Delete category error:', error);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
-
-  module.exports = router;
+module.exports = router;
