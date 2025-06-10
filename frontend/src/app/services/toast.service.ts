@@ -15,7 +15,7 @@ export class ToastService {
 
   private idCounter = 0;
 
-  show(message: string, type: Toast['type'] = 'info', duration: number = 3000) {
+  show(message: string, type: Toast['type'] = 'info', duration: number = 2000) {
     // Prevent the 'clear' type from being used with the show method
     if (type === 'clear') {
       throw new Error('Use clear() method to clear toasts');
