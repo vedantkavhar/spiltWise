@@ -41,9 +41,13 @@ export class DashboardComponent {
   userPhone: string = '';
   whatsappLink: string | null = null;
   // Pagination setup
+  pageSizeOptions = [5, 10, 20, 50];
   currentPage: number = 1;
   pageSize: number = 5; // Or whatever number of expenses per page
   paginatedExpenses: Expense[] = [];
+
+
+
 
 
   constructor(
@@ -91,8 +95,10 @@ export class DashboardComponent {
       },
     });
   }
-
-  filterExpenses(): void {
+  filteredExpenses: Expense[] = []; // add this property
+  // filterExpenses(): void {
+  filterExpenses(resetPage: boolean = false): void {
+    if (resetPage) this.currentPage = 1;
     let filtered = [...this.originalExpenses];
 
     // Filter by Category
@@ -101,9 +107,6 @@ export class DashboardComponent {
         (expense) => expense.category === this.selectedCategory
       );
     }
-
-    
-
     // Filter by Period
     const today = new Date('2025-06-10');
     if (this.selectedPeriod !== 'All') {
@@ -150,7 +153,21 @@ export class DashboardComponent {
         break;
     }
 
-    this.expenses = filtered;
+
+    // Update full filtered list for stats
+    // this.expenses = filtered;
+    this.filteredExpenses = filtered;
+    // Apply pagination
+    if (resetPage) this.currentPage = 1;
+
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.expenses = filtered.slice(startIndex, endIndex);
+
+
+
+
+
   }
 
   addExpense(): void {
@@ -171,17 +188,6 @@ export class DashboardComponent {
     this.expenseService.addExpense(this.formExpense).subscribe({
       next: (expense) => {
         this.loadExpenses(); // Fetch fresh list after successful add
-
-        // whatspa  not working
-        // this.originalExpenses.push(expense);
-        // this.filterExpenses();
-        // try {
-        //   this.generateWhatsAppLink(expense);
-        //   console.log("whatsapp" ,this.generateWhatsAppLink(expense))
-        // } catch {
-        //   console.log("whatsapp" ,this.generateWhatsAppLink(expense))
-        // }
-
         this.resetForm();
         this.toastService.show('Expense added successfully', 'success');
         this.error = '';
@@ -525,6 +531,21 @@ export class DashboardComponent {
       saveAs(blob, `SpendWise_Report_${dateStr}.xlsx`);
       this.toastService.show('Excel downloaded successfully!', 'info');
     });
+  }
+
+  onPageSizeChange(): void {
+    this.filterExpenses(true); // resets to page 1
+  }
+
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredExpenses.length / this.pageSize);
+  }
+
+  changePage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.filterExpenses();
   }
 
 
