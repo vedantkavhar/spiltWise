@@ -65,14 +65,37 @@
   margin-bottom: 24px;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-  width: 100%;
-  padding: 14px 12px;
+.phone-input-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.phone-input-group:focus-within {
+  border-color: #00ddeb;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 8px rgba(0, 221, 235, 0.3);
+}
+
+.phone-prefix {
+  padding: 14px 12px;
+  color: #a0a0a0;
+  font-size: 14px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"] {
+  width: 100%;
+  padding: 14px 12px;
+  border: none; /* Remove default border for phone input */
+  background: transparent; /* Transparent background for phone input */
   color: #ffffff;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -90,15 +113,16 @@ input:not(:placeholder-shown)::placeholder {
 }
 
 input:focus {
-  border-color: #00ddeb;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 8px rgba(0, 221, 235, 0.3);
-  outline: none;
+  outline: none; /* Remove default outline for phone input */
 }
 
 input.invalid {
   border-color: #ff2e63;
   box-shadow: 0 0 8px rgba(255, 46, 99, 0.3);
+}
+
+.phone-input-group input.invalid {
+  border: none; /* Prevent double border on invalid state */
 }
 
 .field-error {
@@ -231,7 +255,13 @@ button.loading {
 
   input[type="text"],
   input[type="email"],
-  input[type="password"] {
+  input[type="password"],
+  input[type="tel"] {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .phone-prefix {
     padding: 12px 10px;
     font-size: 13px;
   }

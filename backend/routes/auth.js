@@ -35,7 +35,7 @@ const upload = multer({
 // Signup route
 router.post('/signup', async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, phone } = req.body;
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'Username, email, and password are required' });
     }
@@ -45,12 +45,21 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Optional: Check for duplicate phone number (if phone is provided and should be unique)
+    if (phone) {
+      const existingPhone = await User.findOne({ phone });
+      if (existingPhone) {
+        return res.status(400).json({ message: 'Phone number already in use' });
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       username,
       email,
       password: hashedPassword,
-      profilePicture: '', // Ensured default empty profilePicture
+      profilePicture: '',
+      phone: phone || undefined, // Store phone if provided, otherwise undefined
     });
     await user.save();
 
@@ -58,7 +67,16 @@ router.post('/signup', async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.status(201).json({ token, user: { id: user._id, username, email, profilePicture: user.profilePicture } });
+    res.status(201).json({
+      token,
+      user: {
+        id: user._id,
+        username,
+        email,
+        profilePicture: user.profilePicture,
+        phone: user.phone || '', // Include phone in response
+      },
+    });
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -87,7 +105,16 @@ router.post('/signin', async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.json({ token, user: { id: user._id, username: user.username, email, profilePicture: user.profilePicture } });
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email,
+        profilePicture: user.profilePicture,
+        phone: user.phone || '', // Include phone in response
+      },
+    });
   } catch (error) {
     console.error('Signin error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -101,7 +128,13 @@ router.get('/me', authMiddleware, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ id: user._id, username: user.username, email: user.email, profilePicture: user.profilePicture });
+    res.json({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      profilePicture: user.profilePicture,
+      phone: user.phone || '', // Include phone in response
+    });
   } catch (error) {
     console.error('Get user profile error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -124,18 +157,19 @@ router.post('/profile-picture', authMiddleware, upload.single('profilePicture'),
     user.profilePicture = imagePath;
     await user.save();
 
-    console.log('Profile picture uploaded:', imagePath); // Added logging for debugging
-    res.json({ 
-      message: 'Profile picture updated', 
-      user: { 
-        id: user._id, 
-        username: user.username, 
-        email: user.email, 
-        profilePicture: user.profilePicture 
-      }
+    console.log('Profile picture uploaded:', imagePath);
+    res.json({
+      message: 'Profile picture updated',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
+        phone: user.phone || '', // Include phone in response
+      },
     });
   } catch (error) {
-    console.error('Upload profile picture error:', error.message); // Enhanced error logging
+    console.error('Upload profile picture error:', error.message);
     res.status(500).json({ message: error.message || 'Server error' });
   }
 });

@@ -8,7 +8,8 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  profilePicture: string; // Ensured profilePicture is string
+  profilePicture: string;
+  phone: string; // Add phone to the User interface
 }
 
 @Injectable({
@@ -19,11 +20,12 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  signup(username: string, email: string, password: string): Observable<{ token: string; user: User }> {
+  signup(username: string, email: string, password: string, phone: string): Observable<{ token: string; user: User }> {
     return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signup`, {
       username,
       email,
       password,
+      phone, // Include phone in the signup request
     });
   }
 
@@ -45,11 +47,11 @@ export class AuthService {
     formData.append('profilePicture', file);
     const token = this.getToken();
     if (!token) {
-      this.logout(); // Redirect to signin if no token
+      this.logout();
       throw new Error('No authentication token found');
     }
     return this.http.post<{ message: string; user: User }>(`${this.apiUrl}/profile-picture`, formData, {
-      headers: { Authorization: `Bearer ${token}` }, // Removed Content-Type to let browser set multipart/form-data
+      headers: { Authorization: `Bearer ${token}` },
     });
   }
 
@@ -64,7 +66,7 @@ export class AuthService {
 
   getUser(): User | null {
     const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    return user && user !== 'null' ? JSON.parse(user) : null;
   }
 
   isAuthenticated(): boolean {
@@ -73,7 +75,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.setItem('user', 'null');
+    localStorage.removeItem('user'); // Remove user instead of setting to 'null'
     this.router.navigate(['/signin']);
   }
 }
