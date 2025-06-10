@@ -39,14 +39,32 @@
             <input type="text" id="description" [(ngModel)]="formExpense.description" name="description" required
               placeholder="Enter description" />
           </div>
-          <div class="form-actions">
-            <button type="submit" class="action-btn submit-btn" [disabled]="!expenseForm.valid"
+          <!-- <div class="form-actions">
+            <button type="submit" class="action-btn submit-btn" [disabled]="!expenseForm.valid || loading"
               [title]="editingExpense ? 'Update' : 'Add'">
               {{ editingExpense ? 'Update' : 'Add' }}
             </button>
             <button *ngIf="editingExpense" type="button" class="action-btn cancel-btn" (click)="cancelEdit()"
               title="Cancel">
               cancel
+            </button>
+          </div> -->
+
+          <div class="form-actions">
+            <button type="submit" class="action-btn submit-btn flex items-center justify-center gap-2"
+              [disabled]="!expenseForm.valid || loading" [title]="editingExpense ? 'Update' : 'Add'">
+              <ng-container *ngIf="!loading">
+                {{ editingExpense ? 'Update' : 'Add' }}
+              </ng-container>
+              <ng-container *ngIf="loading">
+                <span class="spinner"></span> <!-- Optional spinner icon -->
+                Loading...
+              </ng-container>
+            </button>
+
+            <button *ngIf="editingExpense" type="button" class="action-btn cancel-btn" (click)="cancelEdit()"
+              title="Cancel">
+              Cancel
             </button>
           </div>
         </form>

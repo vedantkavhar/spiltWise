@@ -244,4 +244,22 @@ button.loading {
   .auth-link {
     font-size: 13px;
   }
+  .invalid {
+  border: 1px solid red;
+}
+
+.field-error small {
+  color: red;
+}
+
+.auth-container form.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+.error-modal {
+  max-width: 320px;
+  text-align: center;
+  font-weight: 600;
+}
+
 }

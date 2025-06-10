@@ -5,6 +5,8 @@ const User = require('../models/User');
 const authMiddleware = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
+const emailService = require('./emailService');
+
 
 const router = express.Router();
 
@@ -40,17 +42,29 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Username, email, and password are required' });
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ 
+        message: 'Invalid email format' 
+      });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'User already exists with this email' });
+      
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       username,
-      email,
+      // email,
+      email: email.toLowerCase(),
       password: hashedPassword,
       profilePicture: '', // Ensured default empty profilePicture
+      emailNotifications: true,
+      
     });
     await user.save();
 
@@ -58,7 +72,10 @@ router.post('/signup', async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.status(201).json({ token, user: { id: user._id, username, email, profilePicture: user.profilePicture } });
+    // Send welcome email
+    await emailService.sendWelcomeEmail(user.email, user.username);
+
+    res.status(201).json({ token, user: { id: user._id, username, email, profilePicture: user.profilePicture,emailNotifications: user.emailNotifications } });
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({ message: 'Server error' });
