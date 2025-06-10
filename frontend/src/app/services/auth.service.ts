@@ -9,6 +9,7 @@ export interface User {
   username: string;
   email: string;
   profilePicture: string; // Ensured profilePicture is string
+  phone?:string;
 }
 
 @Injectable({
@@ -19,11 +20,12 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  signup(username: string, email: string, password: string): Observable<{ token: string; user: User }> {
+  signup(username: string, email: string, password: string, phone:string ): Observable<{ token: string; user: User }> {
     return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signup`, {
       username,
       email,
       password,
+      phone, //to inlcude it in signup request
     });
   }
 
@@ -64,7 +66,7 @@ export class AuthService {
 
   getUser(): User | null {
     const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    return user && user!=='null' ? JSON.parse(user) : null;
   }
 
   isAuthenticated(): boolean {
@@ -73,7 +75,9 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.setItem('user', 'null');
+    localStorage.removeItem('user');
+
+    // localStorage.setItem('user', 'null');
     this.router.navigate(['/signin']);
   }
 }

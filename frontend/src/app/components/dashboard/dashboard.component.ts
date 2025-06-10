@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, User } from '../../services/auth.service';
 import { Category, Expense, ExpenseService } from '../../services/expense.service';
 import { ToastService } from '../../services/toast.service';
 import { jsPDF } from 'jspdf';
@@ -20,7 +20,7 @@ import * as ExcelJS from 'exceljs';
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent {
-  user: { id: string; username: string; email: string } | null = null;
+  user: User | null = null;
   expenses: Expense[] = [];
   originalExpenses: Expense[] = [];
   formExpense: Partial<Expense> = {
@@ -34,13 +34,17 @@ export class DashboardComponent {
   error: string = '';
   categories: Category[] = [];
   loading: boolean = false;
-
   selectedCategory: string = 'All';
   selectedPeriod: string = 'All';
-  // Added property for search query
-  searchQuery: string = '';
-  // Added property for sort option, defaulting to newest first
-  sortOption: string = 'date-desc';
+  searchQuery: string = '';// Added property for search query
+  sortOption: string = 'date-asc';// Added property for sort option, defaulting to newest last
+  userPhone: string = '';
+  whatsappLink: string | null = null;
+  // Pagination setup
+  currentPage: number = 1;
+  pageSize: number = 5; // Or whatever number of expenses per page
+  paginatedExpenses: Expense[] = [];
+
 
   constructor(
     private authService: AuthService,
@@ -52,6 +56,8 @@ export class DashboardComponent {
     if (!this.user) {
       this.router.navigate(['/signin']);
     } else {
+      this.userPhone = this.user.phone || '',
+        console.log('user phone from authservice:', this.userPhone);
       this.loadCategories();
       this.loadExpenses();
     }
@@ -96,8 +102,10 @@ export class DashboardComponent {
       );
     }
 
+    
+
     // Filter by Period
-    const today = new Date('2025-06-09');
+    const today = new Date('2025-06-10');
     if (this.selectedPeriod !== 'All') {
       const timeRange = this.selectedPeriod === 'Weekly' ? 7 : 30;
       const startDate = new Date(today);
@@ -116,10 +124,12 @@ export class DashboardComponent {
         const formattedDate = this.formatDate(expense.date).toLowerCase();
         const amountStr = expense.amount.toString();
         const description = expense.description.toLowerCase();
+        const category = expense.category.toLowerCase();
         return (
           formattedDate.includes(query) ||
           amountStr.includes(query) ||
-          description.includes(query)
+          description.includes(query) ||
+          category.includes(query)
         );
       });
     }
@@ -154,13 +164,24 @@ export class DashboardComponent {
       return;
     }
 
-    // if (this.formExpense.type === 'Income') {
-    //   this.formExpense.category = 'Food';
-    // }
+    if (!this.formExpense.date) {
+      this.formExpense.date = new Date().toISOString();
+    }
     this.loading = true; // ✅ Start loader
     this.expenseService.addExpense(this.formExpense).subscribe({
-      next: () => {
-        this.loadExpenses(); // 👈 Fetch fresh list after successful add
+      next: (expense) => {
+        this.loadExpenses(); // Fetch fresh list after successful add
+
+        // whatspa  not working
+        // this.originalExpenses.push(expense);
+        // this.filterExpenses();
+        // try {
+        //   this.generateWhatsAppLink(expense);
+        //   console.log("whatsapp" ,this.generateWhatsAppLink(expense))
+        // } catch {
+        //   console.log("whatsapp" ,this.generateWhatsAppLink(expense))
+        // }
+
         this.resetForm();
         this.toastService.show('Expense added successfully', 'success');
         this.error = '';
@@ -174,17 +195,52 @@ export class DashboardComponent {
     });
   }
 
-  editExpense(expense: Expense): void {
-    this.editingExpense = expense;
-    this.formExpense = { ...expense };
+  // whatsappp
+
+  generateWhatsAppLink(expense: Expense): void {
+    console.log('Starting WhatsApp link generation for expense:', expense);
+
+    let phoneNumber = this.userPhone || '';
+    if (phoneNumber && !phoneNumber.startsWith('+')) {
+      phoneNumber = `+${phoneNumber.replace(/\D/g, '')}`;
+    }
+    console.log('Using phone number:', phoneNumber);
+
+    this.createWhatsAppLink(expense, phoneNumber);
   }
+
+  createWhatsAppLink(expense: Expense, phoneNumber: string): void {
+    console.log('Creating WhatsApp link with phone number:', phoneNumber);
+    const date = format(new Date(expense.date), 'MM/dd');
+    const message = `New expense added: ${expense.amount} INR in ${expense.category} on ${date}. Description: ${expense.description}`;
+    console.log('Message to encode:', message);
+    const encodedMessage = encodeURIComponent(message);
+    console.log('Encoded message:', encodedMessage);
+
+    const whatsappLink = phoneNumber
+      ? `https://wa.me/${phoneNumber}?text=${encodedMessage}`
+      : `https://wa.me/?text=${encodedMessage}`;
+    console.log('Generated WhatsApp link:', whatsappLink);
+
+    this.whatsappLink = whatsappLink;
+    this.toastService.show('WhatsApp link generated. Click the link below to share on WhatsApp.', 'info')
+  }
+
+
+
+  editExpense(expense: Expense): void {
+    this.whatsappLink = null;
+    this.editingExpense = expense;
+    this.formExpense = {
+      ...expense,
+      date: new Date(expense.date).toISOString().split('T')[0], // Converts to 'YYYY-MM-DD'
+    };
+  }
+
 
   updateExpense(): void {
     if (!this.editingExpense || !this.editingExpense._id) return;
 
-    // if (this.formExpense.type === 'Income') {
-    //   this.formExpense.category = 'stipend';
-    // }
     this.loading = true; // ✅ Start loader
     this.expenseService
       .updateExpense(this.editingExpense._id, this.formExpense)
@@ -198,6 +254,9 @@ export class DashboardComponent {
           }
           this.loadExpenses();
           this.filterExpenses();
+
+          // this.generateWhatsAppLink(updatedExpense);
+
           this.resetForm();
           this.editingExpense = null;
           this.toastService.show('Expense updated successfully', 'success');
@@ -243,6 +302,7 @@ export class DashboardComponent {
   }
 
   cancelEdit(): void {
+    this.whatsappLink = null;
     this.resetForm();
   }
 
@@ -469,3 +529,4 @@ export class DashboardComponent {
 
 
 }
+

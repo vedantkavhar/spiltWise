@@ -39,16 +39,6 @@
             <input type="text" id="description" [(ngModel)]="formExpense.description" name="description" required
               placeholder="Enter description" />
           </div>
-          <!-- <div class="form-actions">
-            <button type="submit" class="action-btn submit-btn" [disabled]="!expenseForm.valid || loading"
-              [title]="editingExpense ? 'Update' : 'Add'">
-              {{ editingExpense ? 'Update' : 'Add' }}
-            </button>
-            <button *ngIf="editingExpense" type="button" class="action-btn cancel-btn" (click)="cancelEdit()"
-              title="Cancel">
-              cancel
-            </button>
-          </div> -->
 
           <div class="form-actions">
             <button type="submit" class="action-btn submit-btn flex items-center justify-center gap-2"
@@ -68,6 +58,13 @@
             </button>
           </div>
         </form>
+        <!-- Add WhatsApp Link Section -->
+        <div class="whatsapp-link-section" *ngIf="whatsappLink">
+          <p>Share this expense on WhatsApp:</p>
+          <a [href]="whatsappLink" target="_blank" class="whatsapp-link">
+            Open in WhatsApp
+          </a>
+        </div>
       </div>
     </aside>
     <main class="main-content">

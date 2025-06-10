@@ -65,14 +65,56 @@
   margin-bottom: 24px;
 }
 
+.phone-input-group {
+
+  display: flex;
+
+  align-items: center;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 8px;
+
+  overflow: hidden;
+
+  transition: all 0.3s ease;
+
+}
+
+.phone-input-group:focus-within {
+
+  border-color: #00ddeb;
+
+  background: rgba(255, 255, 255, 0.1);
+
+  box-shadow: 0 0 8px rgba(0, 221, 235, 0.3);
+
+}
+
+.phone-prefix {
+
+  padding: 14px 12px;
+
+  color: #a0a0a0;
+
+  font-size: 14px;
+
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+
+}
+
+
 input[type="text"],
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="tel"] {
   width: 100%;
   padding: 14px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
+  /* border-radius: 8px; */
+  background: transparent;
   color: #ffffff;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -90,15 +132,19 @@ input:not(:placeholder-shown)::placeholder {
 }
 
 input:focus {
-  border-color: #00ddeb;
+  /* border-color: #00ddeb;
   background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 8px rgba(0, 221, 235, 0.3);
+  box-shadow: 0 0 8px rgba(0, 221, 235, 0.3); */
   outline: none;
 }
 
 input.invalid {
   border-color: #ff2e63;
   box-shadow: 0 0 8px rgba(255, 46, 99, 0.3);
+}
+
+.phone-input-group input.invalid{
+  border:none;
 }
 
 .field-error {
@@ -199,19 +245,37 @@ button.loading {
 
 /* Animations */
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Design */
@@ -231,7 +295,13 @@ button.loading {
 
   input[type="text"],
   input[type="email"],
-  input[type="password"] {
+  input[type="password"],
+  input[type="tel"] {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .phone-prefix{
     padding: 12px 10px;
     font-size: 13px;
   }
@@ -244,22 +314,24 @@ button.loading {
   .auth-link {
     font-size: 13px;
   }
+
   .invalid {
-  border: 1px solid red;
-}
+    border: 1px solid red;
+  }
 
-.field-error small {
-  color: red;
-}
+  .field-error small {
+    color: red;
+  }
 
-.auth-container form.disabled {
-  pointer-events: none;
-  opacity: 0.6;
-}
-.error-modal {
-  max-width: 320px;
-  text-align: center;
-  font-weight: 600;
-}
+  .auth-container form.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .error-modal {
+    max-width: 320px;
+    text-align: center;
+    font-weight: 600;
+  }
 
 }
