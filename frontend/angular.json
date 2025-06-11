@@ -16,6 +16,16 @@
             "outputPath": "dist/expense-tracker-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "allowedCommonJsDependencies": [
+              "file-saver",
+              "exceljs",
+              "html2canvas",
+              "canvg",
+              "core-js",
+              "jspdf",
+              "rgbcolor",
+              "raf"
+            ],
             "polyfills": [
               "zone.js"
             ],
@@ -36,13 +46,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "32kB",
+                  "maximumError": "48kB"
                 }
               ],
               "outputHashing": "all"

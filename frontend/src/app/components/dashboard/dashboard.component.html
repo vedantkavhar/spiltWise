@@ -47,7 +47,7 @@
                 {{ editingExpense ? 'Update' : 'Add' }}
               </ng-container>
               <ng-container *ngIf="loading">
-                <span class="spinner"></span> <!-- Optional spinner icon -->
+                <span class="spinner"></span> 
                 Loading...
               </ng-container>
             </button>
@@ -147,31 +147,28 @@
             </tbody>
           </table>
 
+          <!-- <div class="pagination-toolbar"> -->
           <div class="pagination-toolbar">
-            <!-- LEFT: Pagination Controls -->
             <div class="pagination-controls" *ngIf="totalPages > 1">
-              <button class="page-btn" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">
-                « Prev
+              <button class="page-btn prev-btn" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)" title="Previous Page">
+                <span class="arrow">◄</span>
               </button>
-
               <button *ngFor="let page of [].constructor(totalPages); let i = index" class="page-btn"
-                [class.active]="currentPage === i + 1" (click)="changePage(i + 1)">
+                [class.active]="currentPage === i + 1" (click)="changePage(i + 1)" [title]="'Page ' + (i + 1)">
                 {{ i + 1 }}
               </button>
-
-              <button class="page-btn" [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">
-                Next »
+              <button class="page-btn next-btn" [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)" title="Next Page">
+                <span class="arrow">►</span>
               </button>
             </div>
-
-            <!-- RIGHT: Page size selector -->
             <div class="page-size-selector">
-              <label for="pageSize">Items per page:</label>
-              <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+              <label for="pageSize">Per page:</label>
+              <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()" title="Select items per page">
                 <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
               </select>
             </div>
           </div>
+ 
 
 
 
