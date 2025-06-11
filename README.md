@@ -17,7 +17,6 @@ Spendwise is a modern, user-friendly expense tracking application designed to he
 
 ## **Deployment:**
 - **Frontend (Vercel):** [https://spilt-wise-fe3.vercel.app](https://spilt-wise-fe3.vercel.app/)
-- **Backend (Render):** [https://spiltwise-backend.onrender.com](https://spiltwise-backend.onrender.com)
 
 
 ## Tech Stack
