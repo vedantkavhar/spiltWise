@@ -133,8 +133,10 @@ export class DashboardComponent {
           amountStr.includes(query) ||
           description.includes(query) ||
           category.includes(query)
+
         );
       });
+
     }
 
     // Added sorting functionality based on sortOption
