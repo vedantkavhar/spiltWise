@@ -346,7 +346,7 @@ Keep tracking your expenses with SpendWise!
                         <tr>
                             <td style="padding: 30px 40px 20px 40px;">
                                 <h2 style="color: #333333; margin: 0 0 10px 0; font-size: 24px;">
-                                    Hello ${expense.userName}! 👋
+                                    Hello ${userName}! 👋
                                 </h2>
                                 <p style="color: #666666; margin: 0; font-size: 16px; line-height: 1.5;">
                                     A Updated expense has been successfully added to your SpendWise account.

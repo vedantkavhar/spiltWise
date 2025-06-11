@@ -105,7 +105,7 @@ router.post('/', authMiddleware, async (req, res) => {
     await expense.save();
 
     // Fetch user details
-    const user = await User.findById(userId).select('email name emailNotifications');
+    const user = await User.findById(userId).select('email username emailNotifications');
 
     // Default response if email not sent
     let emailResult = {
@@ -118,7 +118,7 @@ router.post('/', authMiddleware, async (req, res) => {
       try {
         emailResult = await emailService.sendExpenseNotification(
           user.email,
-          user.name || 'User',
+          user.username || 'User',
           {
             category: expense.category,
             amount: expense.amount,
@@ -217,7 +217,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     await expense.save();
 
     // Fetch user details
-    const user = await User.findById(userId).select('email name emailNotifications');
+    const user = await User.findById(userId).select('email username emailNotifications');
 
     // Default email result
     let emailResult = {
@@ -230,7 +230,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       try {
         emailResult = await emailService.sendUpdatedExpenseNotification(
           user.email,
-          user.name || 'User',
+          user.username || 'User',
           {
             category: expense.category,
             amount: expense.amount,
