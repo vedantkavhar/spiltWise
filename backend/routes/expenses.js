@@ -105,8 +105,8 @@ router.post('/', authMiddleware, async (req, res) => {
     await expense.save();
 
     // Fetch user details
-    const user = await User.findById(userId).select('email name emailNotifications');
-
+    const user = await User.findById(userId).select('email username emailNotifications');
+    console.error('user', user.username);
     // Default response if email not sent
     let emailResult = {
       success: false,
@@ -116,14 +116,15 @@ router.post('/', authMiddleware, async (req, res) => {
     // Send email if enabled
     if (user?.email && user.emailNotifications !== false) {
       try {
+         console.error('userName', user.username);
         emailResult = await emailService.sendExpenseNotification(
           user.email,
-          user.name || 'User',
+          user.username || 'User',
           {
             category: expense.category,
             amount: expense.amount,
             date: expense.date,
-            description: expense.description
+            description: expense.description,
           }
         );
       } catch (err) {
@@ -157,38 +158,6 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 // Update an expense
-// router.put('/:id', authMiddleware, async (req, res) => {
-//   try {
-//     const { description, amount, date, category, type } = req.body;
-//     const expense = await Expense.findOne({ _id: req.params.id, userId: req.user.userId });
-
-//     if (!expense) {
-//       return res.status(404).json({ message: 'Expense not found' });
-//     }
-
-//     if (type === 'Expense' && category) {
-//       const validCategory = await Category.findOne({ name: category });
-
-//       if (!validCategory) {
-//         return res.status(400).json({ message: 'Invalid category' });
-//       }
-//     }
-
-//     if (description) expense.description = description;
-//     if (amount) expense.amount = amount;
-//     if (date) expense.date = date;
-//     expense.category = type === 'Income' ? null : category || null;
-//     if (type) expense.type = type;
-
-//     await expense.save();
-//     res.json(expense);
-//   } catch (error) {
-//     console.error('Update expense error:', error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
-
-// Update an expense
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { description, amount, date, category, type } = req.body;
@@ -217,7 +186,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     await expense.save();
 
     // Fetch user details
-    const user = await User.findById(userId).select('email name emailNotifications');
+    const user = await User.findById(userId).select('email username emailNotifications');
 
     // Default email result
     let emailResult = {
@@ -230,7 +199,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       try {
         emailResult = await emailService.sendUpdatedExpenseNotification(
           user.email,
-          user.name || 'User',
+          user.username || 'User',
           {
             category: expense.category,
             amount: expense.amount,
