@@ -13,7 +13,9 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:4200' }));
+// app.use(cors({ origin: 'http://localhost:4200' }));
+app.use(cors()); // Allow all origins (less secure, only for dev)
+
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Normalized path for consistency
 
