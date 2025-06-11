@@ -12,6 +12,13 @@ Spendwise is a modern, user-friendly expense tracking application designed to he
 - **Futuristic UI:** Glassmorphic cards, neon gradients, and micro-animations for a premium experience.
 - **User Authentication:** Secure sign-in and sign-up functionality (to be implemented).
 - **Database Integration:** Uses MongoDB Atlas for persistent storage of expenses.
+- **Email Notifications:** Receive email alerts on successful sign-up and whenever a new expense is added or updated.
+- **Pagination Support:** Efficiently handles large lists of expenses with seamless pagination for better performance and UX.
+
+## **Deployment:**
+- **Frontend (Vercel):** [https://spilt-wise-fe3.vercel.app](https://spilt-wise-fe3.vercel.app/)
+- **Backend (Render):** [https://spiltwise-backend.onrender.com](https://spiltwise-backend.onrender.com)
+
 
 ## Tech Stack
 - **Frontend:** Angular 18, TypeScript, HTML, CSS  
