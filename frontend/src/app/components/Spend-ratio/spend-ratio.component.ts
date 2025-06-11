@@ -28,7 +28,15 @@ export class SpendRatioComponent implements OnInit {
   pieChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' },
+      legend: {
+        position: 'top',
+        labels: {
+          color: '#ffffff', // ✅ This makes the legend text white
+          font: {
+            size: 14
+          }
+        }
+      },
       tooltip: {
         callbacks: {
           label: (context) => {
@@ -47,7 +55,7 @@ export class SpendRatioComponent implements OnInit {
     private authService: AuthService,
     private expenseService: ExpenseService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     if (!this.authService.isAuthenticated()) {
