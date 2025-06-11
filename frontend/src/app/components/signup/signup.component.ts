@@ -66,14 +66,14 @@ export class SignupComponent implements OnDestroy {
       return;
     }
 
-    if (!this.phone) {
-      this.error = 'Phone number is required';
-      this.showErrorModal = true;
-      this.errorTimeout = setTimeout(() => {
-        this.closeErrorModal();
-      }, 3000);
-      return;
-    }
+    // if (!this.phone) {
+    //   this.error = 'Phone number is required';
+    //   this.showErrorModal = true;
+    //   this.errorTimeout = setTimeout(() => {
+    //     this.closeErrorModal();
+    //   }, 3000);
+    //   return;
+    // }
  
     if (this.isPhoneInvalid) {
       this.error = 'Please enter a valid phone number (e.g., +919876543210)';
