@@ -14,6 +14,7 @@ const app = express();
 
 // Middleware
 app.use(cors({ origin:[ 'http://localhost:4200' ,'https://spilt-wise-fe3.vercel.app']}));
+
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Normalized path for consistency
 
