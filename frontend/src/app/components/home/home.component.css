@@ -175,13 +175,12 @@
 .track-icon {
   background: url('https://api.iconify.design/ph:trend-up.svg?color=%2300ddeb') center/contain no-repeat;
 }
-
-.split-icon {
-  background: url('https://api.iconify.design/ph:arrows-split.svg?color=%23ff2e63') center/contain no-repeat;
+.insights-icon {
+  background: url('https://api.iconify.design/ph:chart-pie-slice.svg?color=%2300ddeb') center/contain no-repeat;
 }
 
-.settle-icon {
-  background: url('https://api.iconify.design/ph:handshake.svg?color=%232fff8c') center/contain no-repeat;
+.ui-icon {
+  background: url('https://api.iconify.design/ph:monitor-play.svg?color=%23ff2e63') center/contain no-repeat;
 }
 
 .feature-card h3 {
