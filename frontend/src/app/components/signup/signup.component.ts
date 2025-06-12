@@ -62,7 +62,7 @@ export class SignupComponent implements OnDestroy {
       this.showErrorModal = true;
       this.errorTimeout = setTimeout(() => {
         this.closeErrorModal();
-      }, 3000);
+      }, 1000);
       return;
     }
 
@@ -80,7 +80,7 @@ export class SignupComponent implements OnDestroy {
       this.showErrorModal = true;
       this.errorTimeout = setTimeout(() => {
         this.closeErrorModal();
-      }, 3000);
+      }, 1000);
       return;
     }
 
@@ -101,7 +101,7 @@ export class SignupComponent implements OnDestroy {
 
         this.successTimeout = setTimeout(() => {
           this.closeSuccessModal();
-        }, 2000);
+        }, 1000);
       },
       error: (err) => {
         console.error('Signup error:', err);
@@ -116,7 +116,7 @@ export class SignupComponent implements OnDestroy {
 
         this.errorTimeout = setTimeout(() => {
           this.closeErrorModal();
-        }, 2000);
+        }, 1000);
       },
 
     });
