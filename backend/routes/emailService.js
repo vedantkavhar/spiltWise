@@ -463,6 +463,144 @@ Keep tracking your expenses with SpendWise!
     `.trim();
     }
 
+    // New method to send insights notification
+    async sendInsightsNotification(userEmail, userName, insights) {
+        try {
+            const htmlContent = this.formatInsightsEmail(userName, insights);
+
+            const mailOptions = {
+                from: {
+                    name: 'SpendWise',
+                    address: process.env.GMAIL_USER
+                },
+                to: userEmail,
+                subject: '💡 Your Financial Insights - SpendWise',
+                html: htmlContent,
+                text: this.formatInsightsPlainTextEmail(userName, insights)
+            };
+
+            const result = await this.transporter.sendMail(mailOptions);
+
+            console.log('Insights email sent:', result.messageId);
+            return {
+                success: true,
+                messageId: result.messageId
+            };
+        } catch (error) {
+            console.error('Insights email sending failed:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
+    formatInsightsEmail(userName, insights) {
+        const date = new Date().toLocaleDateString('en-IN');
+        const time = new Date().toLocaleTimeString('en-IN');
+
+        return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SpendWise - Financial Insights</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
+            <tr>
+                <td align="center">
+                    <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        
+                        <!-- Header -->
+                        <tr>
+                            <td style="background: linear-gradient(135deg,rgb(160, 172, 224) 0%,rgb(64, 57, 70) 100%); padding: 30px 40px; text-align: center;">
+                                <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
+                                    🏦 SpendWise
+                                </h1>
+                                <p style="color: #ffffff; margin: 8px 0 0 0; font-size: 16px; opacity: 0.9;">
+                                    Your Personal Expense Tracker
+                                </p>
+                            </td>
+                        </tr>
+                        
+                        <!-- Greeting -->
+                        <tr>
+                            <td style="padding: 30px 40px 20px 40px;">
+                                <h2 style="color: #333333; margin: 0 0 10px 0; font-size: 24px;">
+                                    Hello ${userName}! 👋
+                                </h2>
+                                <p style="color: #666666; margin: 0; font-size: 16px; line-height: 1.5;">
+                                    Here are your latest financial insights to help you manage your expenses better.
+                                </p>
+                            </td>
+                        </tr>
+                        
+                        <!-- Insights Section -->
+                        <tr>
+                            <td style="padding: 0 40px 30px 40px;">
+                                <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 12px; padding: 25px; border-left: 5px solid #667eea;">
+                                    <h3 style="color: #333333; margin: 0 0 20px 0; font-size: 20px; display: flex; align-items: center;">
+                                        💡 Your Financial Insights
+                                    </h3>
+                                    <ul style="color: #333333; font-size: 16px; line-height: 1.8; padding-left: 20px;">
+                                        ${insights.map(insight => `<li>${insight}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Tips Section -->
+                        <tr>
+                            <td style="padding: 0 40px 30px 40px;">
+                                <div style="background: #e7f3ff; border-radius: 8px; padding: 20px; border-left: 4px solid #0066cc;">
+                                    <h4 style="color: #0066cc; margin: 0 0 10px 0; font-size: 16px;">
+                                        💡 Financial Tip
+                                    </h4>
+                                    <p style="color: #333333; margin: 0; font-size: 14px; line-height: 1.5;">
+                                        Use these insights to adjust your budget and save more each month!
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Footer -->
+                        <tr>
+                            <td style="background: #f8f9fa; padding: 25px 40px; text-align: center; border-top: 1px solid #dee2e6;">
+                                <p style="color: #6c757d; margin: 0 0 10px 0; font-size: 14px;">
+                                    This email was sent at ${time} on ${date}
+                                </p>
+                                <p style="color: #6c757d; margin: 0; font-size: 12px;">
+                                    © 2025 SpendWise. Keep tracking, keep saving! 🎯
+                                </p>
+                            </td>
+                        </tr>
+                        
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>`;
+    }
+
+    formatInsightsPlainTextEmail(userName, insights) {
+        const date = new Date().toLocaleDateString('en-IN');
+        return `
+SpendWise - Financial Insights
+
+Hello ${userName}!
+
+Here are your latest financial insights:
+
+${insights.map((insight, index) => `${index + 1}. ${insight}`).join('\n')}
+
+Keep tracking your expenses with SpendWise!
+
+© 2025 SpendWise
+    `.trim();
+    }
 
 }
 

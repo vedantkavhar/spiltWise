@@ -1,0 +1,36 @@
+<div class="insights-container">
+  <!-- Header (matching ProfileComponent) -->
+  <header>
+    <a routerLink="/" class="nav-link"><h1>Spendwise</h1></a>
+    <nav>
+      <a routerLink="/dashboard" class="nav-link">Dashboard</a>
+      <a routerLink="/spend-ratio" class="nav-link">Spend Ratio</a>
+      <a routerLink="/profile" class="nav-link">Profile</a>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <h2>Your Financial Insights</h2>
+    <div *ngIf="error" class="error" [ngClass]="{'success': error.includes('successfully')}">{{ error }}</div>
+    <div *ngIf="!insights" class="loading">Loading insights...</div>
+    <div class="bento-grid" *ngIf="insights">
+      <div class="bento-item insights-item">
+        <h3>AI-Powered Insights</h3>
+        <div class="insights-grid" *ngIf="insights.length; else noInsights">
+          <div class="insight-card" *ngFor="let insight of insights">
+            <span class="insight-icon">💡</span>
+            <p class="insight-text">{{ insight }}</p>
+          </div>
+        </div>
+        <ng-template #noInsights>
+          <p class="no-data">No insights available. Add more expenses to get personalized insights.</p>
+        </ng-template>
+      </div>
+    </div>
+    <div *ngIf="notificationMessage" class="notification-message">
+      {{ notificationMessage }}
+    </div>
+  </main>
+</div>

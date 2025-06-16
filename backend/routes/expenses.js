@@ -149,7 +149,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
   } catch (error) {
     console.error('Add expense error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Failed to add expense',
       error: error.message
     });
@@ -271,6 +271,107 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     res.json({ message: 'Expense deleted' });
   } catch (error) {
     console.error('Delete expense error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// New endpoint for AI-powered insights and predictions
+router.get('/insights', authMiddleware, async (req, res) => {
+  try {
+    const expenses = await Expense.find({ userId: req.user.userId });
+
+    if (!expenses.length) {
+      return res.status(404).json({ message: 'No expenses found' });
+    }
+
+    // Calculate average spending per category
+    const categoryTotals = {};
+    const categoryCounts = {};
+    expenses.forEach(expense => {
+      if (expense.type === 'Expense') { // Only consider expenses, not income
+        const category = expense.category || 'Uncategorized';
+        categoryTotals[category] = (categoryTotals[category] || 0) + expense.amount;
+        categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+      }
+    });
+
+    const categoryAverages = {};
+    for (const category in categoryTotals) {
+      categoryAverages[category] = categoryTotals[category] / categoryCounts[category];
+    }
+
+    // Calculate recent spending (last 30 days)
+    const today = new Date(); // Hardcoded for consistency, use new Date() in production
+    const recentExpenses = expenses.filter(exp => {
+      const expenseDate = new Date(exp.date);
+      const diffDays = (today - expenseDate) / (1000 * 60 * 60 * 24);
+      return diffDays <= 30 && exp.type === 'Expense';
+    });
+
+    const recentCategoryTotals = {};
+    const recentCategoryCounts = {};
+    recentExpenses.forEach(exp => {
+      const category = exp.category || 'Uncategorized';
+      recentCategoryTotals[category] = (recentCategoryTotals[category] || 0) + exp.amount;
+      recentCategoryCounts[category] = (recentCategoryCounts[category] || 0) + 1;
+    });
+
+    const recentCategoryAverages = {};
+    for (const category in recentCategoryTotals) {
+      recentCategoryAverages[category] = recentCategoryTotals[category] / recentCategoryCounts[category] || 0;
+    }
+
+    // Generate insights for overspending
+    const insights = [];
+    for (const category in recentCategoryAverages) {
+      const historicalAvg = categoryAverages[category] || 0;
+      const recentAvg = recentCategoryAverages[category];
+      if (recentAvg > historicalAvg * 1.3) { // 30% above historical average
+        insights.push(`You've spent 30% more on '${category}' this month (₹${recentCategoryTotals[category].toFixed(2)}) compared to your historical average (₹${historicalAvg.toFixed(2)}). Consider reducing spending in this category.`);
+      }
+    }
+
+    // Predict next month's spending (simple average of past months)
+    const monthlyTotals = {};
+    expenses.forEach(exp => {
+      if (exp.type === 'Expense') {
+        const date = new Date(exp.date);
+        const monthYear = `${date.getFullYear()}-${date.getMonth() + 1}`;
+        monthlyTotals[monthYear] = (monthlyTotals[monthYear] || 0) + exp.amount;
+      }
+    });
+
+    const totalMonths = Object.keys(monthlyTotals).length;
+    const totalSpent = Object.values(monthlyTotals).reduce((sum, val) => sum + val, 0);
+    const predictedSpending = totalMonths > 0 ? totalSpent / totalMonths : 0;
+    insights.push(`Based on your spending, you're likely to spend around ₹${predictedSpending.toFixed(2)} next month.`);
+
+    // Fetch user details for email notification
+    const user = await User.findById(req.user.userId).select('email username emailNotifications');
+    let emailResult = { success: false, message: 'Email notification skipped or disabled' };
+
+    // Send email notification about insights if enabled
+    if (user?.email && user.emailNotifications !== false && insights.length > 0) {
+      try {
+        emailResult = await emailService.sendInsightsNotification(
+          user.email,
+          user.username || 'User',
+          insights
+        );
+      } catch (err) {
+        console.warn('Insights email notification failed:', err.message);
+      }
+    }
+
+    res.json({
+      insights,
+      notification: {
+        sent: emailResult.success,
+        message: emailResult.success ? 'Email notification sent' : emailResult.message || 'Failed to send email'
+      }
+    });
+  } catch (error) {
+    console.error('Get insights error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

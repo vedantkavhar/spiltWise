@@ -13,11 +13,11 @@ export interface Expense {
   category: string;
   type: string;
 }
+
 export interface Category {
   _id: string;
   name: string;
 }
-
 
 export interface ExpenseSummary {
   total: number;
@@ -25,15 +25,23 @@ export interface ExpenseSummary {
   byCategory: { type: string; category: string; total: number; count: number }[];
 }
 
+// New interface for insights response
+export interface InsightsResponse {
+  insights: string[];
+  notification: {
+    sent: boolean;
+    message: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class ExpenseService {
   private apiUrl = `${environment.apiUrl}/expenses`;
-  private apiUrls =`${environment.apiUrl}/categories`;
-  // private apiUrls = 'http://localhost:5000/api/categories'; // your backend URL
+  private apiUrls = `${environment.apiUrl}/categories`;
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
@@ -47,11 +55,9 @@ export class ExpenseService {
     return this.http.get<Expense[]>(url, { headers: this.getHeaders() });
   }
 
-
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(this.apiUrls);
   }
-
 
   getExpenseSummary(): Observable<ExpenseSummary> {
     return this.http.get<ExpenseSummary>(`${this.apiUrl}/summary`, { headers: this.getHeaders() });
@@ -67,5 +73,10 @@ export class ExpenseService {
 
   deleteExpense(id: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
+  // New method to fetch insights
+  getInsights(): Observable<InsightsResponse> {
+    return this.http.get<InsightsResponse>(`${this.apiUrl}/insights`, { headers: this.getHeaders() });
   }
 }
