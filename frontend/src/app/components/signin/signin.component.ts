@@ -22,7 +22,7 @@ export class SigninComponent {
     private authService: AuthService,
     private router: Router,
     private toastService: ToastService
-  ) {}
+  ) { }
 
   onSubmit(): void {
     if (!this.email || !this.password) {
@@ -39,10 +39,10 @@ export class SigninComponent {
         this.toastService.show('Sign in successful! Welcome back.', 'success');
         this.isLoading = false;
         // Wait for 3 seconds (or your toast duration) before navigating
-      setTimeout(() => {
-        this.router.navigate(['/dashboard']);
-      }, 2000); // adjust to match toast display duration
-    
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 2000); // adjust to match toast display duration
+
         // this.router.navigate(['/dashboard']);
       },
       error: (err) => {
@@ -54,7 +54,9 @@ export class SigninComponent {
       },
     });
   }
-// this is onFormChange
+
+
+  // this is onFormChange
   onFormChange(form: any): void {
     // Optional: debug form validation
     console.log('Form state:', {

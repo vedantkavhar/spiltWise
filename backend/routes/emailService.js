@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 class EmailService {
     constructor() {
-        this.transporter = nodemailer.createTransport({
+        this.transporter = nodemailer.createTransport({  //An object that handles the actual sending of emails.
             service: 'gmail',
             auth: {
                 user: process.env.GMAIL_USER,
@@ -17,18 +17,18 @@ class EmailService {
     async verifyConnection() {
         try {
             await this.transporter.verify();
-            console.log('✅ Gmail SMTP connection verified successfully');
+            console.log('Gmail SMTP connection verified successfully');
         } catch (error) {
-            console.error('❌ Gmail SMTP connection failed:', error.message);
+            console.error('Gmail SMTP connection failed:', error.message);
         }
     }
 
-    async sendExpenseNotification(userEmail, userName, expenseData) {
+    async sendExpenseNotification(userEmail, userName, expenseData) { 
         try {
             const htmlContent = this.formatExpenseEmail(userName, expenseData);
 
             const mailOptions = {
-                from: {
+                from: { 
                     name: 'SpendWise',
                     address: process.env.GMAIL_USER
                 },
@@ -57,7 +57,7 @@ class EmailService {
     }
 
     formatExpenseEmail(userName, expense) {
-        console.log('✅ userName',userName,expense);
+        console.log('userName', userName, expense);
         const date = new Date(expense.date).toLocaleDateString('en-IN');
         const time = new Date().toLocaleTimeString('en-IN');
 

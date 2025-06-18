@@ -97,7 +97,7 @@ router.post('/', authMiddleware, async (req, res) => {
     const expense = new Expense({
       description: description.trim(),
       amount: parseFloat(amount),
-      date: new Date(date),
+      date: new Date(date), 
       category: category.trim(),
       userId
     });

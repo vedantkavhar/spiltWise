@@ -9,7 +9,7 @@ export interface User {
   username: string;
   email: string;
   profilePicture: string; // Ensured profilePicture is string
-  phone?:string;
+  phone?: string;
 }
 
 @Injectable({
@@ -18,9 +18,9 @@ export interface User {
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
-  signup(username: string, email: string, password: string, phone:string ): Observable<{ token: string; user: User }> {
+  signup(username: string, email: string, password: string, phone: string): Observable<{ token: string; user: User }> {
     return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signup`, {
       username,
       email,
@@ -66,7 +66,7 @@ export class AuthService {
 
   getUser(): User | null {
     const user = localStorage.getItem('user');
-    return user && user!=='null' ? JSON.parse(user) : null;
+    return user && user !== 'null' ? JSON.parse(user) : null;
   }
 
   isAuthenticated(): boolean {

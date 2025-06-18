@@ -242,4 +242,8 @@ button.loading {
   .auth-link {
     font-size: 13px;
   }
+  .forgot-password {
+  text-align: right;
+  margin-bottom: 15px;
+}
 }
