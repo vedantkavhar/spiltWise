@@ -26,7 +26,7 @@ export class SignupComponent implements OnDestroy {
   private successTimeout: any;
   private errorTimeout: any;
 
-  // 🔧 Added: to access the form reference and reset it
+  // Added: to access the form reference and reset it
   @ViewChild('signupForm') signupForm!: NgForm;
 
   constructor(private authService: AuthService, private router: Router) { }
@@ -66,15 +66,6 @@ export class SignupComponent implements OnDestroy {
       return;
     }
 
-    // if (!this.phone) {
-    //   this.error = 'Phone number is required';
-    //   this.showErrorModal = true;
-    //   this.errorTimeout = setTimeout(() => {
-    //     this.closeErrorModal();
-    //   }, 3000);
-    //   return;
-    // }
- 
     if (this.isPhoneInvalid) {
       this.error = 'Please enter a valid phone number (e.g., +919876543210)';
       this.showErrorModal = true;
@@ -86,7 +77,7 @@ export class SignupComponent implements OnDestroy {
 
     this.isLoading = true;
 
-    this.authService.signup(this.username, this.email, this.password,this.phone).subscribe({
+    this.authService.signup(this.username, this.email, this.password, this.phone).subscribe({
       next: (response) => {
         console.log('Signup response:', response);
 
@@ -96,7 +87,7 @@ export class SignupComponent implements OnDestroy {
 
         this.authService.saveAuthData(response.token, response.user);
 
-        // 🔧 Updated: reset the full form including validation states
+        // Updated: reset the full form including validation states
         this.clearForm();
 
         this.successTimeout = setTimeout(() => {
@@ -127,7 +118,8 @@ export class SignupComponent implements OnDestroy {
     this.showSuccessModal = false;
     this.successMessage = '';
     setTimeout(() => {
-      this.router.navigate(['/dashboard']);
+      // this.router.navigate(['/dashboard']);
+      this.router.navigate(['/signin']);
     }, 200);
   }
 
@@ -151,7 +143,7 @@ export class SignupComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.clearTimeouts();
   }
-  
+
 
   // 🔧 Updated: properly reset form state (not just field values)
   private clearForm(): void {

@@ -7,7 +7,6 @@ import { Category, Expense, ExpenseService } from '../../services/expense.servic
 import { ToastService } from '../../services/toast.service';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { format } from 'date-fns';
 import * as ExcelJS from 'exceljs';

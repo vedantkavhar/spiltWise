@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
-phone: {
+  phone: {
     type: String,
     required: false, // Changed to optional to support existing users
     trim: true,
@@ -31,6 +31,10 @@ phone: {
     type: Boolean,
     default: true
   },
+  refreshToken: {
+    type: String,
+  }, // Store the user's refresh token
+  
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

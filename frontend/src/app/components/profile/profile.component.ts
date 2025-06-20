@@ -3,7 +3,7 @@ import { AuthService, User } from '../../services/auth.service';
 import { ExpenseService, ExpenseSummary } from '../../services/expense.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { environment } from '../../../environments/environment'; // Adjust the path as necessary
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-profile',
   standalone: true,
