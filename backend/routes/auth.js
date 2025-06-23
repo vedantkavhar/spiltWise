@@ -37,7 +37,7 @@ const upload = multer({
 // Signup route
 router.post('/signup', async (req, res) => {
   try {
-    const { username, email, password,  } = req.body;
+    const { username, email, password, } = req.body;
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'Username, email, and password are required' });
     }
@@ -45,15 +45,15 @@ router.post('/signup', async (req, res) => {
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ 
-        message: 'Invalid email format' 
+      return res.status(400).json({
+        message: 'Invalid email format'
       });
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists with this email' });
-      
+
     }
 
 
@@ -64,7 +64,7 @@ router.post('/signup', async (req, res) => {
       password: hashedPassword,
       profilePicture: '', // Ensured default empty profilePicture
       emailNotifications: true,
-      
+
     });
     await user.save();
 
@@ -73,13 +73,18 @@ router.post('/signup', async (req, res) => {
     });
 
     // Send welcome email
-    await emailService.sendWelcomeEmail(user.email, user.username);
+    // await emailService.sendWelcomeEmail(user.email, user.username);
 
-    res.status(201).json({ token, user: { id: user._id, username, email, profilePicture: user.profilePicture,emailNotifications: user.emailNotifications,} });
+    // Fire email in background
+    emailService.sendWelcomeEmail(user.email, user.username)
+      .catch(err => console.error('Email sending failed:', err));
+
+
+    res.status(201).json({ token, user: { id: user._id, username, email, profilePicture: user.profilePicture, emailNotifications: user.emailNotifications, } });
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({ message: 'Server error' });
-    expiresIn:'1h'
+    expiresIn: '1h'
   }
 });
 
@@ -119,7 +124,7 @@ router.get('/me', authMiddleware, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json({ id: user._id, username: user.username, email: user.email, profilePicture: user.profilePicture,});
+    res.json({ id: user._id, username: user.username, email: user.email, profilePicture: user.profilePicture, });
   } catch (error) {
     console.error('Get user profile error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -143,13 +148,13 @@ router.post('/profile-picture', authMiddleware, upload.single('profilePicture'),
     await user.save();
 
     console.log('Profile picture uploaded:', imagePath); // Added logging for debugging
-    res.json({ 
-      message: 'Profile picture updated', 
-      user: { 
-        id: user._id, 
-        username: user.username, 
-        email: user.email, 
-        profilePicture: user.profilePicture ,
+    res.json({
+      message: 'Profile picture updated',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
       }
     });
   } catch (error) {
