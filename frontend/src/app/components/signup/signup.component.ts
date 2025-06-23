@@ -98,7 +98,7 @@ export class SignupComponent implements OnDestroy {
     this.showSuccessModal = false;
     this.successMessage = '';
     setTimeout(() => {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/signin']);
     }, 200);
   }
 
