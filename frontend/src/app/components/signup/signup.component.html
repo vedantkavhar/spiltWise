@@ -24,21 +24,6 @@
         </div>
       </div>
 
-      <!-- signup html -->
-
-      <!-- Update the phone input field within the form -->
-      <!-- <div class="form-group phone-input-group">
-        <span class="phone-prefix">+</span>
-        <input type="tel" id="phone" [(ngModel)]="phone" name="phone" required #phoneField="ngModel"
-          (input)="onPhoneInput()" [class.invalid]="(phoneField.invalid && phoneField.touched) || isPhoneInvalid"
-          placeholder="Phone no. with country code" />
-        <div class="field-error" *ngIf="phoneField.invalid && phoneField.touched">
-          <small *ngIf="phoneField.errors?.['required']">Phone number is required</small>
-        </div>
-        <div class="field-error" *ngIf="isPhoneInvalid && phoneField.touched">
-          <small>Enter a valid phone number (e.g., +919876543210)</small>
-        </div>
-      </div> -->
 
 
       <!-- Password -->
@@ -67,7 +52,7 @@
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" [disabled]="!signupForm.valid || passwordMismatch || isPhoneInvalid || isLoading" [class.loading]="isLoading"
+      <button type="submit" [disabled]="!signupForm.valid || passwordMismatch || isLoading" [class.loading]="isLoading"
         class="action-btn submit-btn">
         <span *ngIf="!isLoading">Sign Up</span>
         <span *ngIf="isLoading" class="spinner"></span>

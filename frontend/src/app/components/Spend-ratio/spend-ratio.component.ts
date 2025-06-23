@@ -1,18 +1,19 @@
+
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-
 import { AuthService } from '../../services/auth.service';
 import { ExpenseService, ExpenseSummary } from '../../services/expense.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-spend-ratio',
   standalone: true,
   imports: [CommonModule, RouterModule, NgChartsModule],
   templateUrl: './spend-ratio.component.html',
-  styleUrls: ['./spend-ratio.component.css']
+  styleUrls: ['./spend-ratio.component.css'],
 })
 export class SpendRatioComponent implements OnInit {
   summary: ExpenseSummary | null = null;
@@ -31,11 +32,11 @@ export class SpendRatioComponent implements OnInit {
       legend: {
         position: 'top',
         labels: {
-          color: '#ffffff', // ✅ This makes the legend text white
+          color: '#ffffff',
           font: {
-            size: 14
-          }
-        }
+            size: 14,
+          },
+        },
       },
       tooltip: {
         callbacks: {
@@ -54,8 +55,9 @@ export class SpendRatioComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private expenseService: ExpenseService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
     if (!this.authService.isAuthenticated()) {
@@ -73,10 +75,7 @@ export class SpendRatioComponent implements OnInit {
       },
       error: (err) => {
         this.error = err.error?.message || 'Failed to load expense summary';
-        if (err.status === 401) {
-          this.authService.logout();
-          this.router.navigate(['/signin']);
-        }
+        this.toastService.show(this.error, 'error');
       },
     });
   }
@@ -105,6 +104,6 @@ export class SpendRatioComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/signin']);
+    this.toastService.show('Logged out successfully', 'success');
   }
 }

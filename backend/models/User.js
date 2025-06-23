@@ -22,11 +22,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
-phone: {
-    type: String,
-    required: false, // Changed to optional to support existing users
-    trim: true,
-  },
   emailNotifications: {
     type: Boolean,
     default: true

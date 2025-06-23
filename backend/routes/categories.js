@@ -1,23 +1,29 @@
-
 const express = require('express');
 const router = express.Router();
 const Category = require('../models/Category');
+const authMiddleware = require('../middleware/auth');
 
 // Create a new category (POST /api/categories)
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   try {
     const { name } = req.body;
     if (!name) {
       return res.status(400).json({ message: 'Category name is required' });
     }
 
-    // Check if category already exists globally
-    const existing = await Category.findOne({ name: name.trim() });
+    // Check if category already exists for this user
+    const existing = await Category.findOne({
+      name: name.trim(),
+      userId: req.user.userId,
+    });
     if (existing) {
       return res.status(400).json({ message: 'Category already exists' });
     }
 
-    const category = new Category({ name: name.trim() });
+    const category = new Category({
+      name: name.trim(),
+      userId: req.user.userId,
+    });
     await category.save();
     res.status(201).json(category);
   } catch (error) {
@@ -26,10 +32,12 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Get all categories (GET /api/categories)
-router.get('/', async (req, res) => {
+// Get all categories for the user (GET /api/categories)
+router.get('/', authMiddleware, async (req, res) => {
   try {
-    const categories = await Category.find().sort({ name: 1 }); // sorted by name ascending
+    const categories = await Category.find({ userId: req.user.userId }).sort({
+      name: 1,
+    });
     res.json(categories);
   } catch (error) {
     console.error('Error fetching categories:', error);
@@ -38,9 +46,12 @@ router.get('/', async (req, res) => {
 });
 
 // Get a category by ID (GET /api/categories/:id)
-router.get('/:id', async (req, res) => {
+router.get('/:id', authMiddleware, async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findOne({
+      _id: req.params.id,
+      userId: req.user.userId,
+    });
     if (!category) return res.status(404).json({ message: 'Category not found' });
     res.json(category);
   } catch (error) {
@@ -50,16 +61,23 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a category (PUT /api/categories/:id)
-router.put('/:id', async (req, res) => {
+router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { name } = req.body;
     if (!name) return res.status(400).json({ message: 'Category name is required' });
 
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findOne({
+      _id: req.params.id,
+      userId: req.user.userId,
+    });
     if (!category) return res.status(404).json({ message: 'Category not found' });
 
-    // Check if new name is unique
-    const existing = await Category.findOne({ name: name.trim(), _id: { $ne: req.params.id } });
+    // Check if new name is unique for this user
+    const existing = await Category.findOne({
+      name: name.trim(),
+      userId: req.user.userId,
+      _id: { $ne: req.params.id },
+    });
     if (existing) return res.status(400).json({ message: 'Category name already exists' });
 
     category.name = name.trim();
@@ -72,9 +90,12 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a category (DELETE /api/categories/:id)
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authMiddleware, async (req, res) => {
   try {
-    const category = await Category.findByIdAndDelete(req.params.id);
+    const category = await Category.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user.userId,
+    });
     if (!category) return res.status(404).json({ message: 'Category not found' });
     res.json({ message: 'Category deleted' });
   } catch (error) {

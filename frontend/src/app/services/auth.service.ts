@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -8,8 +9,8 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  profilePicture: string; // Ensured profilePicture is string
-  phone?:string;
+  profilePicture: string;
+  emailNotifications?: boolean;
 }
 
 @Injectable({
@@ -20,26 +21,56 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  signup(username: string, email: string, password: string, phone:string ): Observable<{ token: string; user: User }> {
-    return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signup`, {
-      username,
-      email,
-      password,
-      phone, //to inlcude it in signup request
-    });
+  signup(username: string, email: string, password: string): Observable<{ accessToken: string; user: User }> {
+    return this.http
+      .post<{ accessToken: string; user: User }>(
+        `${this.apiUrl}/signup`,
+        { username, email, password },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap((response) => this.saveAuthData(response.accessToken, response.user)),
+        catchError((err) => {
+          console.error('Signup error:', err);
+          return throwError(() => err);
+        })
+      );
   }
 
-  signin(email: string, password: string): Observable<{ token: string; user: User }> {
-    return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signin`, {
-      email,
-      password,
-    });
+  signin(email: string, password: string): Observable<{ accessToken: string; user: User }> {
+    return this.http
+      .post<{ accessToken: string; user: User }>(
+        `${this.apiUrl}/signin`,
+        { email, password },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap((response) => this.saveAuthData(response.accessToken, response.user)),
+        catchError((err) => {
+          console.error('Signin error:', err);
+          return throwError(() => err);
+        })
+      );
+  }
+
+  refreshToken(): Observable<{ accessToken: string }> {
+    return this.http
+      .post<{ accessToken: string }>(
+        `${this.apiUrl}/refresh-token`,
+        {},
+        { withCredentials: true }
+      )
+      .pipe(
+        catchError((err) => {
+          this.logout();
+          this.router.navigate(['/signin']);
+          return throwError(() => err);
+        })
+      );
   }
 
   getProfile(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/me`, {
-      headers: { Authorization: `Bearer ${this.getToken()}` },
-    });
+    return this.http.get<User>(`${this.apiUrl}/me`);
   }
 
   uploadProfilePicture(file: File): Observable<{ message: string; user: User }> {
@@ -47,37 +78,61 @@ export class AuthService {
     formData.append('profilePicture', file);
     const token = this.getToken();
     if (!token) {
-      this.logout(); // Redirect to signin if no token
+      this.logout();
       throw new Error('No authentication token found');
     }
-    return this.http.post<{ message: string; user: User }>(`${this.apiUrl}/profile-picture`, formData, {
-      headers: { Authorization: `Bearer ${token}` }, // Removed Content-Type to let browser set multipart/form-data
-    });
+    return this.http.post<{ message: string; user: User }>(
+      `${this.apiUrl}/profile-picture`,
+      formData
+    );
   }
 
-  saveAuthData(token: string, user: User): void {
-    localStorage.setItem('token', token);
+  logout(): void {
+    const token = this.getToken();
+    if (token) {
+      this.http
+        .post(`${this.apiUrl}/logout`, {}, { withCredentials: true })
+        .subscribe({
+          next: () => {
+            this.clearAuthData();
+            this.router.navigate(['/signin']);
+          },
+          error: (err) => {
+            console.error('Logout error:', err);
+            this.clearAuthData();
+            this.router.navigate(['/signin']);
+          },
+        });
+    } else {
+      this.clearAuthData();
+      this.router.navigate(['/signin']);
+    }
+  }
+
+  saveAuthData(accessToken: string, user: User): void {
+    localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('user', JSON.stringify(user));
   }
 
+  updateAccessToken(accessToken: string): void {
+    localStorage.setItem('accessToken', accessToken);
+  }
+
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem('accessToken');
   }
 
   getUser(): User | null {
     const user = localStorage.getItem('user');
-    return user && user!=='null' ? JSON.parse(user) : null;
+    return user && user !== 'null' ? JSON.parse(user) : null;
   }
 
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
 
-  logout(): void {
-    localStorage.removeItem('token');
+  private clearAuthData(): void {
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('user');
-
-    // localStorage.setItem('user', 'null');
-    this.router.navigate(['/signin']);
   }
 }

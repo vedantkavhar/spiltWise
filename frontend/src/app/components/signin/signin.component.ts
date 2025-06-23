@@ -35,7 +35,6 @@ export class SigninComponent {
     this.authService.signin(this.email, this.password).subscribe({
       next: (response) => {
         console.log('Signin response:', response);
-        this.authService.saveAuthData(response.token, response.user);
         this.toastService.show('Sign in successful! Welcome back.', 'success');
         this.isLoading = false;
         // Wait for 3 seconds (or your toast duration) before navigating
@@ -43,7 +42,6 @@ export class SigninComponent {
         this.router.navigate(['/dashboard']);
       }, 1000); // adjust to match toast display duration
     
-        // this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         console.error('Signin error:', err);

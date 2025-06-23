@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
@@ -13,11 +13,11 @@ export interface Expense {
   category: string;
   type: string;
 }
+
 export interface Category {
   _id: string;
   name: string;
 }
-
 
 export interface ExpenseSummary {
   total: number;
@@ -30,42 +30,32 @@ export interface ExpenseSummary {
 })
 export class ExpenseService {
   private apiUrl = `${environment.apiUrl}/expenses`;
-  private apiUrls =`${environment.apiUrl}/categories`;
-  // private apiUrls = 'http://localhost:5000/api/categories'; // your backend URL
+  private apiUrls = `${environment.apiUrl}/categories`;
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
-
-  private getHeaders(): HttpHeaders {
-    const token = this.authService.getToken();
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-  }
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   getExpenses(category?: string): Observable<Expense[]> {
     const url = category && category !== 'All' ? `${this.apiUrl}?category=${category}` : this.apiUrl;
-    return this.http.get<Expense[]>(url, { headers: this.getHeaders() });
+    return this.http.get<Expense[]>(url);
   }
-
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(this.apiUrls);
   }
 
-
   getExpenseSummary(): Observable<ExpenseSummary> {
-    return this.http.get<ExpenseSummary>(`${this.apiUrl}/summary`, { headers: this.getHeaders() });
+    return this.http.get<ExpenseSummary>(`${this.apiUrl}/summary`);
   }
 
   addExpense(expense: Partial<Expense>): Observable<Expense> {
-    return this.http.post<Expense>(this.apiUrl, expense, { headers: this.getHeaders() });
+    return this.http.post<Expense>(this.apiUrl, expense);
   }
 
   updateExpense(id: string, expense: Partial<Expense>): Observable<Expense> {
-    return this.http.put<Expense>(`${this.apiUrl}/${id}`, expense, { headers: this.getHeaders() });
+    return this.http.put<Expense>(`${this.apiUrl}/${id}`, expense);
   }
 
   deleteExpense(id: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
 }

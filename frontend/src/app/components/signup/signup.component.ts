@@ -1,5 +1,5 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, User } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -17,7 +17,6 @@ export class SignupComponent implements OnDestroy {
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
-  phone: string = '';
   error: string = '';
   isLoading: boolean = false;
   successMessage: string = '';
@@ -26,31 +25,15 @@ export class SignupComponent implements OnDestroy {
   private successTimeout: any;
   private errorTimeout: any;
 
-  // 🔧 Added: to access the form reference and reset it
   @ViewChild('signupForm') signupForm!: NgForm;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
-  // Check if passwords match
   get passwordMismatch(): boolean {
     return this.password !== this.confirmPassword && this.confirmPassword.length > 0;
   }
 
-  // Phone number validation
-  get isPhoneInvalid(): boolean {
-    const phoneRegex = /^\+\d{10,15}$/; // Require the + at the start
-    return this.phone.length > 0 && !phoneRegex.test(this.phone);
-  }
-  // Automatically prepend + if not present
-  onPhoneInput(): void {
-    if (this.phone && !this.phone.startsWith('+')) {
-      this.phone = `+${this.phone.replace(/\D/g, '')}`;
-    }
-  }
-
-
   onSubmit(): void {
-    // Clear previous messages and timeouts
     this.error = '';
     this.successMessage = '';
     this.showSuccessModal = false;
@@ -66,39 +49,15 @@ export class SignupComponent implements OnDestroy {
       return;
     }
 
-    // if (!this.phone) {
-    //   this.error = 'Phone number is required';
-    //   this.showErrorModal = true;
-    //   this.errorTimeout = setTimeout(() => {
-    //     this.closeErrorModal();
-    //   }, 3000);
-    //   return;
-    // }
- 
-    if (this.isPhoneInvalid) {
-      this.error = 'Please enter a valid phone number (e.g., +919876543210)';
-      this.showErrorModal = true;
-      this.errorTimeout = setTimeout(() => {
-        this.closeErrorModal();
-      }, 1000);
-      return;
-    }
-
     this.isLoading = true;
 
-    this.authService.signup(this.username, this.email, this.password,this.phone).subscribe({
+    this.authService.signup(this.username, this.email, this.password).subscribe({
       next: (response) => {
         console.log('Signup response:', response);
-
         this.successMessage = 'Sign up successful! Welcome to our platform.';
         this.showSuccessModal = true;
         this.isLoading = false;
-
-        this.authService.saveAuthData(response.token, response.user);
-
-        // 🔧 Updated: reset the full form including validation states
         this.clearForm();
-
         this.successTimeout = setTimeout(() => {
           this.closeSuccessModal();
         }, 1000);
@@ -111,14 +70,12 @@ export class SignupComponent implements OnDestroy {
         console.log('Error details:', {
           status: err.status,
           statusText: err.statusText,
-          error: err.error
+          error: err.error,
         });
-
         this.errorTimeout = setTimeout(() => {
           this.closeErrorModal();
         }, 1000);
       },
-
     });
   }
 
@@ -151,12 +108,14 @@ export class SignupComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.clearTimeouts();
   }
-  
 
-  // 🔧 Updated: properly reset form state (not just field values)
   private clearForm(): void {
     if (this.signupForm) {
       this.signupForm.resetForm();
     }
+    this.username = '';
+    this.email = '';
+    this.password = '';
+    this.confirmPassword = '';
   }
 }

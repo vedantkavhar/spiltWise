@@ -65,45 +65,7 @@
   margin-bottom: 24px;
 }
 
-.phone-input-group {
 
-  display: flex;
-
-  align-items: center;
-
-  background: rgba(255, 255, 255, 0.05);
-
-  border: 1px solid rgba(255, 255, 255, 0.1);
-
-  border-radius: 8px;
-
-  overflow: hidden;
-
-  transition: all 0.3s ease;
-
-}
-
-.phone-input-group:focus-within {
-
-  border-color: #00ddeb;
-
-  background: rgba(255, 255, 255, 0.1);
-
-  box-shadow: 0 0 8px rgba(0, 221, 235, 0.3);
-
-}
-
-.phone-prefix {
-
-  padding: 14px 12px;
-
-  color: #a0a0a0;
-
-  font-size: 14px;
-
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-
-}
 
 
 input[type="text"],
@@ -143,9 +105,7 @@ input.invalid {
   box-shadow: 0 0 8px rgba(255, 46, 99, 0.3);
 }
 
-.phone-input-group input.invalid{
-  border:none;
-}
+
 
 .field-error {
   margin-top: 4px;
@@ -301,10 +261,6 @@ button.loading {
     font-size: 13px;
   }
 
-  .phone-prefix{
-    padding: 12px 10px;
-    font-size: 13px;
-  }
 
   button.action-btn.submit-btn {
     padding: 12px;

@@ -7,7 +7,12 @@ const categorySchema = new mongoose.Schema({
     required: true,
     trim: true,
     unique: true,
-  }
-});
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+}, { timestamps: true });
 
 module.exports = mongoose.model('Category', categorySchema);

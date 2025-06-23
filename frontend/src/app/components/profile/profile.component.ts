@@ -3,7 +3,9 @@ import { AuthService, User } from '../../services/auth.service';
 import { ExpenseService, ExpenseSummary } from '../../services/expense.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { environment } from '../../../environments/environment'; // Adjust the path as necessary
+import { environment } from '../../../environments/environment';
+import { ToastService } from '../../services/toast.service';
+
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -23,7 +25,8 @@ export class ProfileComponent {
   constructor(
     private authService: AuthService,
     private expenseService: ExpenseService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     this.loadProfile();
     this.loadSummary();
@@ -34,14 +37,12 @@ export class ProfileComponent {
       next: (user) => {
         this.user = user;
         this.authService.saveAuthData(this.authService.getToken()!, user);
-        console.log('User profile loaded:', user); // Added for debugging
+        console.log('User profile loaded:', user);
       },
       error: (err) => {
         this.error = err.error?.message || 'Failed to load profile';
-        if (err.status === 401) {
-          this.authService.logout();
-          this.router.navigate(['/signin']);
-        }
+        this.toastService.show(this.error, 'error');
+        console.error('Profile load error:', err);
       },
     });
   }
@@ -53,6 +54,8 @@ export class ProfileComponent {
       },
       error: (err) => {
         this.error = err.error?.message || 'Failed to load expense summary';
+        this.toastService.show(this.error, 'error');
+        console.error('Summary load error:', err);
       },
     });
   }
@@ -74,18 +77,19 @@ export class ProfileComponent {
           this.authService.saveAuthData(this.authService.getToken()!, response.user);
           this.isUploading = false;
           this.error = 'Profile picture updated successfully!';
-          // Added: Auto-dismiss success message after 5 seconds
+          this.toastService.show(this.error, 'success');
           setTimeout(() => {
             if (this.error === 'Profile picture updated successfully!') {
               this.error = '';
             }
           }, 2000);
-          console.log('Upload response:', response); // Added for debugging
+          console.log('Upload response:', response);
         },
         error: (err) => {
           this.error = err.message || 'Failed to upload profile picture';
+          this.toastService.show(this.error, 'error');
           this.isUploading = false;
-          console.error('Upload error:', err); // Added for debugging
+          console.error('Upload error:', err);
         },
       });
     }
@@ -97,22 +101,21 @@ export class ProfileComponent {
 
   getImageUrl(path: string): string {
     if (!path) return '';
-    // Fixed: Normalize path and ensure correct base URL
     const normalizedPath = path.startsWith('/uploads/') ? path : `/uploads${path.startsWith('/') ? path : '/' + path}`;
-    const baseUrl = environment.apiUrl.replace(/\/api$/, ''); // Remove /api
+    const baseUrl = environment.apiUrl.replace(/\/api$/, '');
     const fullUrl = `${baseUrl}${normalizedPath}`;
-    console.log('Generated image URL:', fullUrl); // Added for debugging
+    console.log('Generated image URL:', fullUrl);
     return fullUrl;
   }
 
   onImageError(event: Event): void {
     this.imageLoadError = true;
     this.error = 'Failed to load profile picture. Please try uploading again.';
-    console.error('Image load error for URL:', (event.target as HTMLImageElement).src); // Added for debugging
+    this.toastService.show(this.error, 'error');
+    console.error('Image load error for URL:', (event.target as HTMLImageElement).src);
   }
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/signin']);
   }
 }

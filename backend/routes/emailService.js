@@ -1,66 +1,65 @@
 const nodemailer = require('nodemailer');
 
 class EmailService {
-    constructor() {
-        this.transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_APP_PASSWORD
-            }
-        });
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    });
 
-        // Verify connection
-        this.verifyConnection();
+    // Verify connection
+    this.verifyConnection();
+  }
+
+  async verifyConnection() {
+    try {
+      await this.transporter.verify();
+      console.log('✅ Gmail SMTP connection verified successfully');
+    } catch (error) {
+      console.error('❌ Gmail SMTP connection failed:', error.message);
     }
+  }
 
-    async verifyConnection() {
-        try {
-            await this.transporter.verify();
-            console.log('✅ Gmail SMTP connection verified successfully');
-        } catch (error) {
-            console.error('❌ Gmail SMTP connection failed:', error.message);
-        }
+  async sendExpenseNotification(userEmail, userName, expenseData) {
+    try {
+      const htmlContent = this.formatExpenseEmail(userName, expenseData);
+
+      const mailOptions = {
+        from: {
+          name: 'SpendWise',
+          address: process.env.GMAIL_USER,
+        },
+        to: userEmail,
+        subject: '💰 New Expense Added - SpendWise Alert',
+        html: htmlContent,
+        text: this.formatPlainTextEmail(userName, expenseData),
+      };
+
+      const result = await this.transporter.sendMail(mailOptions);
+
+      console.log('Email sent successfully:', result.messageId);
+      return {
+        success: true,
+        messageId: result.messageId,
+        response: result.response,
+      };
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      return {
+        success: false,
+        error: error.message,
+      };
     }
+  }
 
-    async sendExpenseNotification(userEmail, userName, expenseData) {
-        try {
-            const htmlContent = this.formatExpenseEmail(userName, expenseData);
+  formatExpenseEmail(userName, expense) {
+    const date = new Date(expense.date).toLocaleDateString('en-IN');
+    const time = new Date().toLocaleTimeString('en-IN');
 
-            const mailOptions = {
-                from: {
-                    name: 'SpendWise',
-                    address: process.env.GMAIL_USER
-                },
-                to: userEmail,
-                subject: '💰 New Expense Added - SpendWise Alert',
-                html: htmlContent,
-                text: this.formatPlainTextEmail(userName, expenseData) // Fallback for plain text
-            };
-
-            const result = await this.transporter.sendMail(mailOptions);
-
-            console.log('Email sent successfully:', result.messageId);
-            return {
-                success: true,
-                messageId: result.messageId,
-                response: result.response
-            };
-
-        } catch (error) {
-            console.error('Email sending failed:', error);
-            return {
-                success: false,
-                error: error.message
-            };
-        }
-    }
-
-    formatExpenseEmail(userName, expense) {
-        const date = new Date(expense.date).toLocaleDateString('en-IN');
-        const time = new Date().toLocaleTimeString('en-IN');
-
-        return `
+    return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -73,7 +72,6 @@ class EmailService {
             <tr>
                 <td align="center">
                     <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                        
                         <!-- Header -->
                         <tr>
                             <td style="background: linear-gradient(135deg,rgb(160, 172, 224) 0%,rgb(64, 57, 70) 100%); padding: 30px 40px; text-align: center;">
@@ -85,7 +83,6 @@ class EmailService {
                                 </p>
                             </td>
                         </tr>
-                        
                         <!-- Greeting -->
                         <tr>
                             <td style="padding: 30px 40px 20px 40px;">
@@ -97,7 +94,6 @@ class EmailService {
                                 </p>
                             </td>
                         </tr>
-                        
                         <!-- Expense Details Card -->
                         <tr>
                             <td style="padding: 0 40px 30px 40px;">
@@ -105,7 +101,6 @@ class EmailService {
                                     <h3 style="color: #333333; margin: 0 0 20px 0; font-size: 20px; display: flex; align-items: center;">
                                         💰 Expense Details
                                     </h3>
-                                    
                                     <table width="100%" cellpadding="8" cellspacing="0">
                                         <tr>
                                             <td style="padding: 12px 0; border-bottom: 1px solid #dee2e6;">
@@ -151,7 +146,6 @@ class EmailService {
                                 </div>
                             </td>
                         </tr>
-                        
                         <!-- Tips Section -->
                         <tr>
                             <td style="padding: 0 40px 30px 40px;">
@@ -165,7 +159,6 @@ class EmailService {
                                 </div>
                             </td>
                         </tr>
-                        
                         <!-- Footer -->
                         <tr>
                             <td style="background: #f8f9fa; padding: 25px 40px; text-align: center; border-top: 1px solid #dee2e6;">
@@ -177,22 +170,20 @@ class EmailService {
                                 </p>
                             </td>
                         </tr>
-                        
                     </table>
                 </td>
             </tr>
         </table>
     </body>
     </html>`;
-    }
+  }
 
-    formatPlainTextEmail(userName, expense) {
-        const date = new Date(expense.date).toLocaleDateString('en-IN');
-        return `
+  formatPlainTextEmail(userName, expense) {
+    const date = new Date(expense.date).toLocaleDateString('en-IN');
+    return `
 SpendWise - Expense Added
 
-// Hello ${userName}!
-Hello ${expense.userName}!
+Hello ${userName}!
 
 A new expense has been added to your account:
 
@@ -205,33 +196,32 @@ Keep tracking your expenses with SpendWise!
 
 © 2025 SpendWise
     `.trim();
+  }
+
+  async sendWelcomeEmail(userEmail, userName) {
+    try {
+      const htmlContent = this.formatWelcomeEmail(userName);
+
+      const mailOptions = {
+        from: {
+          name: 'SpendWise',
+          address: process.env.GMAIL_USER,
+        },
+        to: userEmail,
+        subject: '🎉 Welcome to SpendWise - Start Your Financial Journey!',
+        html: htmlContent,
+      };
+
+      const result = await this.transporter.sendMail(mailOptions);
+      return { success: true, messageId: result.messageId };
+    } catch (error) {
+      console.error('Welcome email failed:', error);
+      return { success: false, error: error.message };
     }
+  }
 
-    // Send welcome email when user signs up
-    async sendWelcomeEmail(userEmail, userName) {
-        try {
-            const htmlContent = this.formatWelcomeEmail(userName);
-
-            const mailOptions = {
-                from: {
-                    name: 'SpendWise',
-                    address: process.env.GMAIL_USER
-                },
-                to: userEmail,
-                subject: '🎉 Welcome to SpendWise - Start Your Financial Journey!',
-                html: htmlContent
-            };
-
-            const result = await this.transporter.sendMail(mailOptions);
-            return { success: true, messageId: result.messageId };
-        } catch (error) {
-            console.error('Welcome email failed:', error);
-            return { success: false, error: error.message };
-        }
-    }
-
-    formatWelcomeEmail(userName) {
-        return `
+  formatWelcomeEmail(userName) {
+    return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -277,59 +267,56 @@ Keep tracking your expenses with SpendWise!
         </table>
     </body>
     </html>`;
+  }
+
+  async sendUpdatedExpenseNotification(userEmail, userName, expenseData) {
+    try {
+      const htmlContent = this.formatUpdatedExpenseEmail(userName, expenseData);
+
+      const mailOptions = {
+        from: {
+          name: 'SpendWise',
+          address: process.env.GMAIL_USER,
+        },
+        to: userEmail,
+        subject: '🔄 Expense Updated - SpendWise Alert',
+        html: htmlContent,
+        text: this.formatUpdatedPlainTextEmail(userName, expenseData),
+      };
+
+      const result = await this.transporter.sendMail(mailOptions);
+
+      console.log('Update email sent:', result.messageId);
+      return {
+        success: true,
+        messageId: result.messageId,
+      };
+    } catch (error) {
+      console.error('Email sending (update) failed:', error);
+      return {
+        success: false,
+        error: error.message,
+      };
     }
+  }
 
-    // for update expanse
-    async sendUpdatedExpenseNotification(userEmail, userName, expenseData) {
-        try {
-            const htmlContent = this.formatUpdatedExpenseEmail(userName, expenseData);
+  formatUpdatedExpenseEmail(userName, expense) {
+    const date = new Date(expense.date).toLocaleDateString('en-IN');
+    const time = new Date().toLocaleTimeString('en-IN');
 
-            const mailOptions = {
-                from: {
-                    name: 'SpendWise',
-                    address: process.env.GMAIL_USER
-                },
-                to: userEmail,
-                subject: '🔄 Expense Updated - SpendWise Alert',
-                html: htmlContent,
-                text: this.formatUpdatedPlainTextEmail(userName, expenseData)
-            };
-
-            const result = await this.transporter.sendMail(mailOptions);
-
-            console.log('Update email sent:', result.messageId);
-            return {
-                success: true,
-                messageId: result.messageId
-            };
-
-        } catch (error) {
-            console.error('Email sending (update) failed:', error);
-            return {
-                success: false,
-                error: error.message
-            };
-        }
-    }
-
-    formatUpdatedExpenseEmail(userName, expense) {
-        const date = new Date(expense.date).toLocaleDateString('en-IN');
-        const time = new Date().toLocaleTimeString('en-IN');
-
-        return `
+    return `
     <!DOCTYPE html>
     <html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SpendWise - Expense Updated </title>
+        <title>SpendWise - Expense Updated</title>
     </head>
     <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
             <tr>
                 <td align="center">
                     <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                        
                         <!-- Header -->
                         <tr>
                             <td style="background: linear-gradient(135deg,rgb(160, 172, 224) 0%,rgb(64, 57, 70) 100%); padding: 30px 40px; text-align: center;">
@@ -341,7 +328,6 @@ Keep tracking your expenses with SpendWise!
                                 </p>
                             </td>
                         </tr>
-                        
                         <!-- Greeting -->
                         <tr>
                             <td style="padding: 30px 40px 20px 40px;">
@@ -349,11 +335,10 @@ Keep tracking your expenses with SpendWise!
                                     Hello ${userName}! 👋
                                 </h2>
                                 <p style="color: #666666; margin: 0; font-size: 16px; line-height: 1.5;">
-                                    A Updated expense has been successfully added to your SpendWise account.
+                                    An expense has been successfully updated in your SpendWise account.
                                 </p>
                             </td>
                         </tr>
-                        
                         <!-- Expense Details Card -->
                         <tr>
                             <td style="padding: 0 40px 30px 40px;">
@@ -361,7 +346,6 @@ Keep tracking your expenses with SpendWise!
                                     <h3 style="color: #333333; margin: 0 0 20px 0; font-size: 20px; display: flex; align-items: center;">
                                         💰 Updated Expense Details
                                     </h3>
-                                    
                                     <table width="100%" cellpadding="8" cellspacing="0">
                                         <tr>
                                             <td style="padding: 12px 0; border-bottom: 1px solid #dee2e6;">
@@ -407,7 +391,6 @@ Keep tracking your expenses with SpendWise!
                                 </div>
                             </td>
                         </tr>
-                        
                         <!-- Tips Section -->
                         <tr>
                             <td style="padding: 0 40px 30px 40px;">
@@ -421,7 +404,6 @@ Keep tracking your expenses with SpendWise!
                                 </div>
                             </td>
                         </tr>
-                        
                         <!-- Footer -->
                         <tr>
                             <td style="background: #f8f9fa; padding: 25px 40px; text-align: center; border-top: 1px solid #dee2e6;">
@@ -433,24 +415,22 @@ Keep tracking your expenses with SpendWise!
                                 </p>
                             </td>
                         </tr>
-                        
                     </table>
                 </td>
             </tr>
         </table>
     </body>
     </html>`;
-    }
+  }
 
-    formatUpdatedPlainTextEmail(userName, expense) {
-        const date = new Date(expense.date).toLocaleDateString('en-IN');
-        return `
-SpendWise - Expense Added
+  formatUpdatedPlainTextEmail(userName, expense) {
+    const date = new Date(expense.date).toLocaleDateString('en-IN');
+    return `
+SpendWise - Expense Updated
 
-// Hello ${userName}!
-Hello ${expense.userName}!
+Hello ${userName}!
 
-A Updated expense has been added to your account:
+An expense has been updated in your account:
 
 Category: ${expense.category}
 Amount: ₹${expense.amount.toLocaleString('en-IN')}
@@ -461,9 +441,7 @@ Keep tracking your expenses with SpendWise!
 
 © 2025 SpendWise
     `.trim();
-    }
-
-
+  }
 }
 
 module.exports = new EmailService();
