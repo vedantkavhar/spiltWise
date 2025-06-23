@@ -26,8 +26,8 @@
   height: 100%;
   background: linear-gradient(45deg, #00ddeb, #ff2e63, #00ddeb, #ff2e63);
   background-size: 400%;
-  opacity: 0.03; /* Reduced opacity for a more subtle effect */
-  animation: gradientShift 20s ease infinite; /* Slower animation for a calmer feel */
+  opacity: 0.03;
+  animation: gradientShift 20s ease infinite;
 }
 
 /* Header */
@@ -36,8 +36,8 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem 2rem;
-  background: rgba(0, 0, 0, 0.4); /* Slightly lighter for a cleaner look */
-  backdrop-filter: blur(8px); /* Reduced blur for a more subtle glass effect */
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: sticky;
   top: 0;
@@ -123,7 +123,7 @@ nav {
 }
 
 .logout-btn:hover {
-  box-shadow: 0 0 12px rgba(0, 221, 235, 0.3); /* Reduced shadow intensity */
+  box-shadow: 0 0 12px rgba(0, 221, 235, 0.3);
   transform: translateY(-1px);
 }
 
@@ -150,7 +150,7 @@ h2 {
 
 /* Error and Success Messages */
 .error {
-  background: rgba(255, 46, 99, 0.15); /* Lighter background */
+  background: rgba(255, 46, 99, 0.15);
   color: #ff2e63;
   padding: 0.8rem;
   border-radius: 10px;
@@ -170,7 +170,7 @@ h2 {
 /* Loading State */
 .loading {
   text-align: center;
-  color: #b0b0b0; /* Softer gray for less contrast */
+  color: #b0b0b0;
   font-size: 0.95rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.03);
@@ -188,18 +188,18 @@ h2 {
 }
 
 .bento-item {
-  background: rgba(255, 255, 255, 0.03); /* Lighter glassmorphism */
-  backdrop-filter: blur(6px); /* Reduced blur */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 1.2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
   animation: fadeInUp 0.5s ease forwards;
 }
 
 .bento-item:hover {
-  transform: translateY(-3px); /* Kept scale effect, removed blue shadow */
+  transform: translateY(-3px);
 }
 
 /* Animations */
@@ -246,7 +246,7 @@ h2 {
 h3 {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #ffffff; /* Solid white for a cleaner look */
+  color: #ffffff;
   margin: 0 0 0.8rem;
   text-align: center;
 }
@@ -280,7 +280,7 @@ h3 {
 }
 
 .avatar:hover {
-  box-shadow: 0 0 0 4px rgba(0, 221, 235, 0.4); /* Kept blue shadow for avatar */
+  box-shadow: 0 0 0 4px rgba(0, 221, 235, 0.4);
   transform: scale(1.05);
 }
 
@@ -332,7 +332,7 @@ h3 {
 }
 
 .info-item {
-  background: rgba(255, 255, 255, 0.02); /* Even lighter background */
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 10px;
   padding: 0.8rem;
   display: flex;
@@ -349,7 +349,7 @@ h3 {
 
 .info-value {
   font-size: 0.9rem;
-  color: #b0b0b0; /* Softer gray */
+  color: #b0b0b0;
 }
 
 /* Stats Grid */
@@ -395,7 +395,7 @@ h3 {
 }
 
 .category-card:hover {
-  transform: scale(1.02); /* Kept scale effect, removed blue shadow */
+  transform: scale(1.02);
 }
 
 .category-title {
@@ -505,12 +505,34 @@ h3 {
 }
 
 @media (max-width: 480px) {
+  header {
+    flex-direction: column; /* Stack h1 and nav vertically */
+    align-items: center; /* Center content */
+    padding: 0.6rem 1rem; /* Reduce padding for compactness */
+    gap: 0.5rem; /* Add spacing between h1 and nav */
+  }
+
   h1 {
-    font-size: 1.3rem;
+    font-size: 1.3rem; /* Slightly smaller for better fit */
+    text-align: center; /* Ensure h1 is centered */
+  }
+
+  nav {
+    flex-wrap: wrap; /* Allow nav items to wrap */
+    justify-content: center; /* Center nav items */
+    gap: 0.8rem; /* Reduce gap for compactness */
+    width: 100%; /* Ensure nav takes full width */
   }
 
   .nav-link {
-    font-size: 0.85rem;
+    font-size: 0.8rem; /* Smaller font size */
+    padding: 0.2rem 0.5rem; /* Add slight padding for touch targets */
+  }
+
+  .logout-btn {
+    font-size: 0.8rem; /* Smaller font size */
+    padding: 0.3rem 0.8rem; /* Compact padding */
+    min-width: 80px; /* Ensure button is wide enough but fits */
   }
 
   h2 {
@@ -531,5 +553,29 @@ h3 {
 
   .category-count {
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 375px) {
+  header {
+    padding: 0.5rem 0.8rem; /* Further reduce padding for iPhone SE */
+  }
+
+  h1 {
+    font-size: 1.2rem; /* Even smaller for tight viewports */
+  }
+
+  nav {
+    gap: 0.6rem; /* Further reduce gap */
+  }
+
+  .nav-link {
+    font-size: 0.75rem; /* Smaller font for links */
+  }
+
+  .logout-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem; /* Tighter padding */
+    min-width: 70px; /* Slightly smaller button */
   }
 }
