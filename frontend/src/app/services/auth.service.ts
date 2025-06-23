@@ -9,7 +9,6 @@ export interface User {
   username: string;
   email: string;
   profilePicture: string; // Ensured profilePicture is string
-  phone?:string;
 }
 
 @Injectable({
@@ -20,12 +19,11 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  signup(username: string, email: string, password: string, phone:string ): Observable<{ token: string; user: User }> {
+  signup(username: string, email: string, password: string, ): Observable<{ token: string; user: User }> {
     return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signup`, {
       username,
       email,
       password,
-      phone, //to inlcude it in signup request
     });
   }
 

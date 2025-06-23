@@ -38,8 +38,7 @@ export class DashboardComponent {
   selectedPeriod: string = 'All';
   searchQuery: string = '';// Added property for search query
   sortOption: string = 'date-asc';// Added property for sort option, defaulting to newest last
-  userPhone: string = '';
-  whatsappLink: string | null = null;
+  
   // Pagination setup
   pageSizeOptions = [5, 10, 20, 50];
   currentPage: number = 1;
@@ -60,8 +59,7 @@ export class DashboardComponent {
     if (!this.user) {
       this.router.navigate(['/signin']);
     } else {
-      this.userPhone = this.user.phone || '',
-        console.log('user phone from authservice:', this.userPhone);
+      
       this.loadCategories();
       this.loadExpenses();
     }
@@ -203,41 +201,9 @@ export class DashboardComponent {
     });
   }
 
-  // whatsappp
-
-  generateWhatsAppLink(expense: Expense): void {
-    console.log('Starting WhatsApp link generation for expense:', expense);
-
-    let phoneNumber = this.userPhone || '';
-    if (phoneNumber && !phoneNumber.startsWith('+')) {
-      phoneNumber = `+${phoneNumber.replace(/\D/g, '')}`;
-    }
-    console.log('Using phone number:', phoneNumber);
-
-    this.createWhatsAppLink(expense, phoneNumber);
-  }
-
-  createWhatsAppLink(expense: Expense, phoneNumber: string): void {
-    console.log('Creating WhatsApp link with phone number:', phoneNumber);
-    const date = format(new Date(expense.date), 'MM/dd');
-    const message = `New expense added: ${expense.amount} INR in ${expense.category} on ${date}. Description: ${expense.description}`;
-    console.log('Message to encode:', message);
-    const encodedMessage = encodeURIComponent(message);
-    console.log('Encoded message:', encodedMessage);
-
-    const whatsappLink = phoneNumber
-      ? `https://wa.me/${phoneNumber}?text=${encodedMessage}`
-      : `https://wa.me/?text=${encodedMessage}`;
-    console.log('Generated WhatsApp link:', whatsappLink);
-
-    this.whatsappLink = whatsappLink;
-    this.toastService.show('WhatsApp link generated. Click the link below to share on WhatsApp.', 'info')
-  }
-
 
 
   editExpense(expense: Expense): void {
-    this.whatsappLink = null;
     this.editingExpense = expense;
     this.formExpense = {
       ...expense,
@@ -263,7 +229,6 @@ export class DashboardComponent {
           this.loadExpenses();
           this.filterExpenses();
 
-          // this.generateWhatsAppLink(updatedExpense);
 
           this.resetForm();
           this.editingExpense = null;
@@ -310,7 +275,6 @@ export class DashboardComponent {
   }
 
   cancelEdit(): void {
-    this.whatsappLink = null;
     this.resetForm();
   }
 

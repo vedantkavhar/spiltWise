@@ -17,7 +17,6 @@ export class SignupComponent implements OnDestroy {
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
-  phone: string = '';
   error: string = '';
   isLoading: boolean = false;
   successMessage: string = '';
@@ -34,18 +33,6 @@ export class SignupComponent implements OnDestroy {
   // Check if passwords match
   get passwordMismatch(): boolean {
     return this.password !== this.confirmPassword && this.confirmPassword.length > 0;
-  }
-
-  // Phone number validation
-  get isPhoneInvalid(): boolean {
-    const phoneRegex = /^\+\d{10,15}$/; // Require the + at the start
-    return this.phone.length > 0 && !phoneRegex.test(this.phone);
-  }
-  // Automatically prepend + if not present
-  onPhoneInput(): void {
-    if (this.phone && !this.phone.startsWith('+')) {
-      this.phone = `+${this.phone.replace(/\D/g, '')}`;
-    }
   }
 
 
@@ -66,27 +53,11 @@ export class SignupComponent implements OnDestroy {
       return;
     }
 
-    // if (!this.phone) {
-    //   this.error = 'Phone number is required';
-    //   this.showErrorModal = true;
-    //   this.errorTimeout = setTimeout(() => {
-    //     this.closeErrorModal();
-    //   }, 3000);
-    //   return;
-    // }
  
-    if (this.isPhoneInvalid) {
-      this.error = 'Please enter a valid phone number (e.g., +919876543210)';
-      this.showErrorModal = true;
-      this.errorTimeout = setTimeout(() => {
-        this.closeErrorModal();
-      }, 1000);
-      return;
-    }
 
     this.isLoading = true;
 
-    this.authService.signup(this.username, this.email, this.password,this.phone).subscribe({
+    this.authService.signup(this.username, this.email, this.password,).subscribe({
       next: (response) => {
         console.log('Signup response:', response);
 
