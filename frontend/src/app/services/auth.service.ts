@@ -54,28 +54,26 @@ export class AuthService {
   }
 
   saveAuthData(token: string, user: User): void {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('user', JSON.stringify(user));
   }
-
+ 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   }
-
+ 
   getUser(): User | null {
-    const user = localStorage.getItem('user');
-    return user && user!=='null' ? JSON.parse(user) : null;
+    const user = sessionStorage.getItem('user');
+    return user && user !== 'null' ? JSON.parse(user) : null;
   }
-
+ 
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
-
+ 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-
-    // localStorage.setItem('user', 'null');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     this.router.navigate(['/signin']);
   }
 }
