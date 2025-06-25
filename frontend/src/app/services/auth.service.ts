@@ -9,7 +9,6 @@ export interface User {
   username: string;
   email: string;
   profilePicture: string; // Ensured profilePicture is string
-  phone?:string;
 }
 
 @Injectable({
@@ -20,12 +19,11 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  signup(username: string, email: string, password: string, phone:string ): Observable<{ token: string; user: User }> {
+  signup(username: string, email: string, password: string, ): Observable<{ token: string; user: User }> {
     return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signup`, {
       username,
       email,
       password,
-      phone, //to inlcude it in signup request
     });
   }
 
@@ -56,28 +54,26 @@ export class AuthService {
   }
 
   saveAuthData(token: string, user: User): void {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('user', JSON.stringify(user));
   }
-
+ 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   }
-
+ 
   getUser(): User | null {
-    const user = localStorage.getItem('user');
-    return user && user!=='null' ? JSON.parse(user) : null;
+    const user = sessionStorage.getItem('user');
+    return user && user !== 'null' ? JSON.parse(user) : null;
   }
-
+ 
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
-
+ 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-
-    // localStorage.setItem('user', 'null');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     this.router.navigate(['/signin']);
   }
 }

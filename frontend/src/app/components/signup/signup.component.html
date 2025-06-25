@@ -23,6 +23,12 @@
           <small *ngIf="emailField.errors?.['email']">Enter a valid email</small>
         </div>
       </div>
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> b925e617fecc198920821a88952427a0ce7a4987
       <!-- Password -->
       <div class="form-group">
         <input type="password" id="password" [(ngModel)]="password" name="password" required minlength="6"
@@ -49,8 +55,13 @@
       </div>
 
       <!-- Submit Button -->
+<<<<<<< HEAD
       <button type="submit" [disabled]="!signupForm.valid || passwordMismatch || isPhoneInvalid || isLoading"
         [class.loading]="isLoading" class="action-btn submit-btn">
+=======
+      <button type="submit" [disabled]="!signupForm.valid || passwordMismatch || isLoading" [class.loading]="isLoading"
+        class="action-btn submit-btn">
+>>>>>>> b925e617fecc198920821a88952427a0ce7a4987
         <span *ngIf="!isLoading">Sign Up</span>
         <span *ngIf="isLoading" class="spinner"></span>
         <span *ngIf="isLoading">Signing Up...</span>

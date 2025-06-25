@@ -393,12 +393,34 @@ canvas {
 }
 
 @media (max-width: 480px) {
+  header {
+    flex-direction: column; /* Stack h1 and nav vertically */
+    align-items: center; /* Center content */
+    padding: 0.6rem 1rem; /* Reduce padding for compactness */
+    gap: 0.5rem; /* Add spacing between h1 and nav */
+  }
+
   h1 {
-    font-size: 1.3rem;
+    font-size: 1.3rem; /* Slightly smaller for better fit */
+    text-align: center; /* Ensure h1 is centered */
+  }
+
+  nav {
+    flex-wrap: wrap; /* Allow nav items to wrap */
+    justify-content: center; /* Center nav items */
+    gap: 0.8rem; /* Reduce gap for compactness */
+    width: 100%; /* Ensure nav takes full width */
   }
 
   .nav-link {
-    font-size: 0.85rem;
+    font-size: 0.8rem; /* Smaller font size */
+    padding: 0.2rem 0.5rem; /* Add slight padding for touch targets */
+  }
+
+  .logout-btn {
+    font-size: 0.8rem; /* Smaller font size */
+    padding: 0.3rem 0.8rem; /* Compact padding */
+    min-width: 80px; /* Ensure button is wide enough but fits */
   }
 
   h2 {
@@ -419,5 +441,29 @@ canvas {
 
   .category-percentage {
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 375px) {
+  header {
+    padding: 0.5rem 0.8rem; /* Further reduce padding for iPhone SE */
+  }
+
+  h1 {
+    font-size: 1.2rem; /* Even smaller for tight viewports */
+  }
+
+  nav {
+    gap: 0.6rem; /* Further reduce gap */
+  }
+
+  .nav-link {
+    font-size: 0.75rem; /* Smaller font for links */
+  }
+
+  .logout-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem; /* Tighter padding */
+    min-width: 70px; /* Slightly smaller button */
   }
 }
