@@ -5,22 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { AuthService, User } from '../../services/auth.service';
 import { Expense, Category } from '../../services/expense.service';
 import { ToastService } from '../../services/toast.service';
-<<<<<<< HEAD
-import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import { saveAs } from 'file-saver';
-import { format } from 'date-fns';
-import * as ExcelJS from 'exceljs';
-
-=======
 import { ExpenseOperationsService } from './expense-operations.service';
 import { ExpenseFilterService } from './expense-filter.service';
 import { ExpenseExportService } from './expense-export.service';
->>>>>>> 4a50210ad6ff0bbf02deb0f9d5ee36d2ad68002a
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule ],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })

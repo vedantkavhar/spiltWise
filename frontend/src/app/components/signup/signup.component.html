@@ -1,7 +1,7 @@
 <div class="auth-container">
   <div class="auth-card">
     <h2 class="auth-title">Join Spendwise</h2>
-
+ 
     <form (ngSubmit)="onSubmit()" #signupForm="ngForm" [class.disabled]="isLoading">
       <!-- Username -->
       <div class="form-group">
@@ -13,7 +13,7 @@
           <small *ngIf="usernameField.errors?.['minlength']">At least 3 characters</small>
         </div>
       </div>
-
+ 
       <!-- Email -->
       <div class="form-group">
         <input type="email" id="email" [(ngModel)]="email" name="email" required email #emailField="ngModel"
@@ -23,12 +23,9 @@
           <small *ngIf="emailField.errors?.['email']">Enter a valid email</small>
         </div>
       </div>
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> b925e617fecc198920821a88952427a0ce7a4987
+ 
+ 
+ 
       <!-- Password -->
       <div class="form-group">
         <input type="password" id="password" [(ngModel)]="password" name="password" required minlength="6"
@@ -39,7 +36,7 @@
           <small *ngIf="passwordField.errors?.['minlength']">At least 6 characters</small>
         </div>
       </div>
-
+ 
       <!-- Confirm Password -->
       <div class="form-group">
         <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required
@@ -53,31 +50,27 @@
           <small>Passwords do not match</small>
         </div>
       </div>
-
+ 
       <!-- Submit Button -->
-<<<<<<< HEAD
-      <button type="submit" [disabled]="!signupForm.valid || passwordMismatch || isPhoneInvalid || isLoading"
-        [class.loading]="isLoading" class="action-btn submit-btn">
-=======
       <button type="submit" [disabled]="!signupForm.valid || passwordMismatch || isLoading" [class.loading]="isLoading"
         class="action-btn submit-btn">
->>>>>>> b925e617fecc198920821a88952427a0ce7a4987
         <span *ngIf="!isLoading">Sign Up</span>
         <span *ngIf="isLoading" class="spinner"></span>
         <span *ngIf="isLoading">Signing Up...</span>
       </button>
-
+ 
       <!-- Switch to Signin -->
       <p class="auth-link">
         Already have an account? <a routerLink="/signin">Sign In</a>
       </p>
     </form>
-
+ 
     <!-- Error Modal -->
     <div *ngIf="showErrorModal"
       class="error-modal fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg z-50">
       <strong>Error:</strong> {{ error }}
     </div>
-
+ 
   </div>
 </div>
+ 
