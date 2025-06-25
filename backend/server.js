@@ -8,6 +8,7 @@ const expenseRoutes = require('./routes/expenses');
 const dotenv = require('dotenv');
 const path = require('path'); // Added for path handling
 const categoryRoutes = require('./routes/categories');
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,7 @@ app.use(cors({ origin:[ 'http://localhost:4200' ,'https://spilt-wise-fe3.vercel.
 
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Normalized path for consistency
+app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);

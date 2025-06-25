@@ -38,7 +38,7 @@ export class SigninComponent {
         this.authService.saveAuthData(response.token, response.user);
         this.toastService.show('Sign in successful! Welcome back.', 'success');
         this.isLoading = false;
-        // Wait for 3 seconds (or your toast duration) before navigating
+        // Wait for 1 seconds (or your toast duration) before navigating
       setTimeout(() => {
         this.router.navigate(['/dashboard']);
       }, 1000); // adjust to match toast display duration
