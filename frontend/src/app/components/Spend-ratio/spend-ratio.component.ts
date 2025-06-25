@@ -18,9 +18,21 @@ export class SpendRatioComponent implements OnInit {
   summary: ExpenseSummary | null = null;
   error = '';
 
+  colorPalette = [
+  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+  '#FF9F40', '#C9CBCF', '#8BC34A', '#E91E63', '#00BCD4',
+  '#CDDC39', '#9C27B0', '#FFC107', '#795548', '#607D8B'
+];
+
+
   pieChartData: ChartData<'pie'> = {
     labels: [],
-    datasets: [{ data: [] }],
+    datasets: [
+    {
+      data: [],
+      backgroundColor: [],
+    },
+  ]
   };
 
   pieChartType: ChartType = 'pie';
@@ -31,7 +43,7 @@ export class SpendRatioComponent implements OnInit {
       legend: {
         position: 'top',
         labels: {
-          color: '#ffffff', // ✅ This makes the legend text white
+          color: '#ffffff', // makes the legend text white
           font: {
             size: 14
           }
@@ -91,12 +103,9 @@ export class SpendRatioComponent implements OnInit {
         {
           data: categories.map((c) => c.total),
           backgroundColor: [
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56',
-            '#4BC0C0',
-            '#9966FF',
-            '#FF9F40',
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+    '#FF9F40', '#C9CBCF', '#8BC34A', '#E91E63', '#00BCD4',
+    '#CDDC39', '#9C27B0', '#FFC107', '#795548', '#607D8B'
           ],
         },
       ],
