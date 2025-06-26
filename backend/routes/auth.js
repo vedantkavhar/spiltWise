@@ -20,6 +20,8 @@ const storage = multer.diskStorage({
   },
 });
 
+// Multer upload instance with file size and type restrictions
+
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
@@ -34,10 +36,12 @@ const upload = multer({
   },
 });
 
-// Signup route
+// Signup route- registers a new user
 router.post('/signup', async (req, res) => {
   try {
     const { username, email, password, } = req.body;
+
+    // Validate input
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'Username, email, and password are required' });
     }
@@ -56,7 +60,7 @@ router.post('/signup', async (req, res) => {
 
     }
 
-
+    // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       username,
@@ -75,7 +79,7 @@ router.post('/signup', async (req, res) => {
     // Send welcome email
     // await emailService.sendWelcomeEmail(user.email, user.username);
 
-    // Fire email in background
+    // Send welcome email in background (non-blocking)
     emailService.sendWelcomeEmail(user.email, user.username)
       .catch(err => console.error('Email sending failed:', err));
 
@@ -88,10 +92,12 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Signin route
+// Signin route - authenticates a user
 router.post('/signin', async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    // validationss for input
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
@@ -110,6 +116,7 @@ router.post('/signin', async (req, res) => {
       expiresIn: '1h',
     });
 
+    // Respond with token and user info
     res.json({ token, user: { id: user._id, username: user.username, email, profilePicture: user.profilePicture, } });
   } catch (error) {
     console.error('Signin error:', error);
@@ -120,6 +127,7 @@ router.post('/signin', async (req, res) => {
 // Get user profile
 router.get('/me', authMiddleware, async (req, res) => {
   try {
+     // Find user by ID, exclude password field
     const user = await User.findById(req.user.userId).select('-password');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

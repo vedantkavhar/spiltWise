@@ -57,6 +57,7 @@ export class SignupComponent implements OnDestroy {
 
     this.isLoading = true;
 
+    // Call the signup method from AuthService
     this.authService.signup(this.username, this.email, this.password,).subscribe({
       next: (response) => {
         console.log('Signup response:', response);

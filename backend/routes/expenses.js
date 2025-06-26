@@ -156,37 +156,6 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
-// Update an expense
-// router.put('/:id', authMiddleware, async (req, res) => {
-//   try {
-//     const { description, amount, date, category, type } = req.body;
-//     const expense = await Expense.findOne({ _id: req.params.id, userId: req.user.userId });
-
-//     if (!expense) {
-//       return res.status(404).json({ message: 'Expense not found' });
-//     }
-
-//     if (type === 'Expense' && category) {
-//       const validCategory = await Category.findOne({ name: category });
-
-//       if (!validCategory) {
-//         return res.status(400).json({ message: 'Invalid category' });
-//       }
-//     }
-
-//     if (description) expense.description = description;
-//     if (amount) expense.amount = amount;
-//     if (date) expense.date = date;
-//     expense.category = type === 'Income' ? null : category || null;
-//     if (type) expense.type = type;
-
-//     await expense.save();
-//     res.json(expense);
-//   } catch (error) {
-//     console.error('Update expense error:', error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
 
 // Update an expense
 router.put('/:id', authMiddleware, async (req, res) => {

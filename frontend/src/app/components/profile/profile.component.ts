@@ -1,3 +1,4 @@
+
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { AuthService, User } from '../../services/auth.service';
 import { ExpenseService, ExpenseSummary } from '../../services/expense.service';
@@ -18,6 +19,7 @@ export class ProfileComponent {
   isUploading: boolean = false;
   imageLoadError: boolean = false;
 
+  // Added: ViewChild to access the file input element
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   constructor(
@@ -28,7 +30,7 @@ export class ProfileComponent {
     this.loadProfile();
     this.loadSummary();
   }
-
+  // Added: Method to load user profile
   loadProfile(): void {
     this.authService.getProfile().subscribe({
       next: (user) => {
@@ -45,7 +47,7 @@ export class ProfileComponent {
       },
     });
   }
-
+  // Added: Method to load expense summary
   loadSummary(): void {
     this.expenseService.getExpenseSummary().subscribe({
       next: (summary) => {
@@ -56,11 +58,11 @@ export class ProfileComponent {
       },
     });
   }
-
+  // Added: Method to trigger file input click
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
   }
-
+  // Added: Method to handle file selection
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -94,7 +96,7 @@ export class ProfileComponent {
   getCategoryProgress(categoryTotal: number): number {
     return this.summary && this.summary.total > 0 ? (categoryTotal / this.summary.total) * 100 : 0;
   }
-
+  // Added: Method to get image URL
   getImageUrl(path: string): string {
     if (!path) return '';
     // Fixed: Normalize path and ensure correct base URL

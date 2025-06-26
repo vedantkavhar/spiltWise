@@ -19,6 +19,7 @@ export class DashboardComponent {
   user: User | null = null;
   expenses: Expense[] = [];
   originalExpenses: Expense[] = [];
+  // Model for the expense form (add/edit)
   formExpense: Partial<Expense> = {
     date: '',
     type: 'Expense',
@@ -30,6 +31,7 @@ export class DashboardComponent {
   error: string = '';
   categories: Category[] = [];
   loading: boolean = false;
+  // Filter and pagination state
   selectedCategory: string = 'All';
   selectedPeriod: string = 'All';
   searchQuery: string = '';
@@ -47,6 +49,7 @@ export class DashboardComponent {
     private expenseExport: ExpenseExportService,
     private toastService: ToastService
   ) {
+    // On component init, check authentication and load data
     this.user = this.authService.getUser();
     if (!this.user) {
       this.router.navigate(['/signin']);
@@ -55,7 +58,7 @@ export class DashboardComponent {
       this.loadExpenses();
     }
   }
-
+  // Fetch categories from backend
   loadCategories(): void {
     this.expenseOperations.loadCategories().subscribe({
       next: (categories) => {
@@ -68,7 +71,7 @@ export class DashboardComponent {
       }
     });
   }
-
+  // Fetch expenses from backend
   loadExpenses(): void {
     this.expenseOperations.loadExpenses('All').subscribe({
       next: (expenses) => {
@@ -81,7 +84,7 @@ export class DashboardComponent {
       },
     });
   }
-
+  // Filter and paginate expenses based on selected criteria
   filterExpenses(resetPage: boolean = false): void {
     const result = this.expenseFilter.filterExpenses(
       this.originalExpenses,
@@ -97,7 +100,7 @@ export class DashboardComponent {
     this.expenses = result.paginatedExpenses;
     if (resetPage) this.currentPage = 1;
   }
-
+  // Add a new expense
   addExpense(): void {
     this.expenseOperations.addExpense(this.formExpense).subscribe({
       next: () => {
@@ -112,12 +115,12 @@ export class DashboardComponent {
       },
     });
   }
-
+  // Edit an existing expense
   editExpense(expense: Expense): void {
     this.editingExpense = expense;
     this.formExpense = this.expenseOperations.prepareEditExpense(expense);
   }
-
+  // Update an existing expense
   updateExpense(): void {
     if (!this.editingExpense || !this.editingExpense._id) return;
     this.expenseOperations.updateExpense(this.editingExpense._id, this.formExpense).subscribe({
@@ -138,7 +141,7 @@ export class DashboardComponent {
       },
     });
   }
-
+  // Delete an expense
   deleteExpense(expenseId: string): void {
     this.expenseOperations.deleteExpense(expenseId).subscribe({
       next: () => {
@@ -152,7 +155,7 @@ export class DashboardComponent {
       },
     });
   }
-
+  // Reset the expense form
   resetForm(): void {
     this.formExpense = {
       date: '',
@@ -163,11 +166,11 @@ export class DashboardComponent {
     };
     this.editingExpense = null;
   }
-
+  // Cancel editing an expense
   cancelEdit(): void {
     this.resetForm();
   }
-
+  // Logout the user
   logout(): void {
     this.authService.logout();
     this.toastService.show('Logged out successfully', 'success');
@@ -175,7 +178,7 @@ export class DashboardComponent {
       this.router.navigate(['/signin']);
     }, 2000);
   }
-
+  // Get total expenses based on current filters
   getTotalExpenses(): number {
     return this.expenseFilter.getTotalExpenses(this.expenses);
   }

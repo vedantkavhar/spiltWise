@@ -24,6 +24,11 @@ export class SigninComponent {
     private toastService: ToastService
   ) {}
 
+  // This method is called when the form is submitted
+  // It checks if the email and password are provided, then calls the signin method from Auth
+  // service to authenticate the user
+  // If successful, it saves the authentication data and navigates to the dashboard
+  // If there's an error, it shows a toast message with the error details
   onSubmit(): void {
     if (!this.email || !this.password) {
       this.toastService.show('Email and password are required.', 'error');

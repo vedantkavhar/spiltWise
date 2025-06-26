@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
 
+// EmailService handles sending notification and welcome emails using Gmail SMTP
+// Configure nodemailer transporter with Gmail credentials from environment variables
 class EmailService {
     constructor() {
         this.transporter = nodemailer.createTransport({
@@ -23,6 +25,7 @@ class EmailService {
         }
     }
 
+    // Sends an expense notification email to the user
     async sendExpenseNotification(userEmail, userName, expenseData) {
         try {
             const htmlContent = this.formatExpenseEmail(userName, expenseData);
@@ -55,7 +58,7 @@ class EmailService {
             };
         }
     }
-
+ // Formats the HTML content for the expense notification email
     formatExpenseEmail(userName, expense) {
         const date = new Date(expense.date).toLocaleDateString('en-IN');
         const time = new Date().toLocaleTimeString('en-IN');
@@ -185,7 +188,7 @@ class EmailService {
     </body>
     </html>`;
     }
-
+// Returns a plain text version of the expense notification
     formatPlainTextEmail(userName, expense) {
         const date = new Date(expense.date).toLocaleDateString('en-IN');
         return `
@@ -229,7 +232,7 @@ Keep tracking your expenses with SpendWise!
             return { success: false, error: error.message };
         }
     }
-
+// Formats the HTML content for the welcome email
     formatWelcomeEmail(userName) {
         return `
     <!DOCTYPE html>
@@ -279,7 +282,7 @@ Keep tracking your expenses with SpendWise!
     </html>`;
     }
 
-    // for update expanse
+// Sends an email notification when an expense is updated
     async sendUpdatedExpenseNotification(userEmail, userName, expenseData) {
         try {
             const htmlContent = this.formatUpdatedExpenseEmail(userName, expenseData);
@@ -311,7 +314,7 @@ Keep tracking your expenses with SpendWise!
             };
         }
     }
-
+    // Formats the HTML content for the updated expense notification email
     formatUpdatedExpenseEmail(userName, expense) {
         const date = new Date(expense.date).toLocaleDateString('en-IN');
         const time = new Date().toLocaleTimeString('en-IN');
@@ -441,7 +444,7 @@ Keep tracking your expenses with SpendWise!
     </body>
     </html>`;
     }
-
+    // Formats the plain text content for the updated expense notification email
     formatUpdatedPlainTextEmail(userName, expense) {
         const date = new Date(expense.date).toLocaleDateString('en-IN');
         return `

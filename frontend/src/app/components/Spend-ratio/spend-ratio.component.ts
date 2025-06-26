@@ -13,7 +13,8 @@ import { ExpenseService, ExpenseSummary } from '../../services/expense.service';
   imports: [CommonModule, RouterModule, NgChartsModule],
   templateUrl: './spend-ratio.component.html',
   styleUrls: ['./spend-ratio.component.css']
-})
+}) 
+
 export class SpendRatioComponent implements OnInit {
   summary: ExpenseSummary | null = null;
   error = '';
@@ -24,6 +25,7 @@ export class SpendRatioComponent implements OnInit {
   '#CDDC39', '#9C27B0', '#FFC107', '#795548', '#607D8B'
 ];
 
+  // Data structure for the pie chart
 
   pieChartData: ChartData<'pie'> = {
     labels: [],
@@ -36,6 +38,7 @@ export class SpendRatioComponent implements OnInit {
   };
 
   pieChartType: ChartType = 'pie';
+  // Chart options for appearance and tooltips
 
   pieChartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -51,6 +54,8 @@ export class SpendRatioComponent implements OnInit {
       },
       tooltip: {
         callbacks: {
+          // Customizes tooltip to show value and percentage
+
           label: (context) => {
             const label = context.label || '';
             const raw = context.raw as number;
@@ -69,6 +74,8 @@ export class SpendRatioComponent implements OnInit {
     private router: Router
   ) { }
 
+  // Redirect to signin if not authenticated
+
   ngOnInit(): void {
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/signin']);
@@ -77,6 +84,7 @@ export class SpendRatioComponent implements OnInit {
     }
   }
 
+    // Loads the expense summary from the backend
   loadSummary(): void {
     this.expenseService.getExpenseSummary().subscribe({
       next: (summary) => {
@@ -92,7 +100,8 @@ export class SpendRatioComponent implements OnInit {
       },
     });
   }
-
+  // Updates the pie chart data based on the summary
+  // Maps categories to labels and totals to data points
   updateChartData(): void {
     if (!this.summary) return;
     const categories = this.summary.byCategory;

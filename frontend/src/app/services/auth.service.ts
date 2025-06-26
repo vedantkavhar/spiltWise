@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
-
+// User interface representing the authenticated user
 export interface User {
   id: string;
   username: string;
@@ -15,10 +15,12 @@ export interface User {
   providedIn: 'root',
 })
 export class AuthService {
+  // Base URL for authentication endpoints
   private apiUrl = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  // Registers a new user and returns a token and user object
   signup(username: string, email: string, password: string, ): Observable<{ token: string; user: User }> {
     return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signup`, {
       username,
@@ -27,6 +29,7 @@ export class AuthService {
     });
   }
 
+  // Authenticates a user and returns a token and user object
   signin(email: string, password: string): Observable<{ token: string; user: User }> {
     return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signin`, {
       email,
@@ -34,12 +37,14 @@ export class AuthService {
     });
   }
 
+  // Retrieves the authenticated user's profile from the backend
   getProfile(): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/me`, {
       headers: { Authorization: `Bearer ${this.getToken()}` },
     });
   }
 
+  // Uploads a new profile picture for the user
   uploadProfilePicture(file: File): Observable<{ message: string; user: User }> {
     const formData = new FormData();
     formData.append('profilePicture', file);
@@ -53,6 +58,7 @@ export class AuthService {
     });
   }
 
+  // Saves authentication token and user info to sessionStorage
   saveAuthData(token: string, user: User): void {
     sessionStorage.setItem('token', token);
     sessionStorage.setItem('user', JSON.stringify(user));
@@ -67,6 +73,7 @@ export class AuthService {
     return user && user !== 'null' ? JSON.parse(user) : null;
   }
  
+  // Checks if the user is authenticated (token exists)
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
