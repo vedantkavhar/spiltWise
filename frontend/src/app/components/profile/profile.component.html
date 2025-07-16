@@ -1,13 +1,13 @@
 <div class="profile-container">
   <header>
     <a routerLink="/" class="nav-link"><h1>Spendwise</h1></a>
-    <nav>
-      <a routerLink="/dashboard" class="nav-link">Dashboard</a>
+    <nav role="navigation">
+      <a routerLink="/dashboard" class="nav-link" aria-label="Go to dashboard page">Dashboard</a>
       <a routerLink="/spend-ratio" class="nav-link">Spend Ratio</a>
       <button class="logout-btn" (click)="logout()">Logout</button>
     </nav>
   </header>
-  <main>
+  <main role="main">
     <h2>Your Spendwise Profile</h2>
     <div *ngIf="error" class="error" [ngClass]="{ success: error.includes('successfully') }">{{ error }}</div>
     <div *ngIf="!user || !summary" class="loading">Loading your profile...</div>

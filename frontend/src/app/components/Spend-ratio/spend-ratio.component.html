@@ -1,22 +1,35 @@
 <div class="spend-ratio-container">
   <header>
-    <a routerLink="/" class="nav-link"><h1>Spendwise</h1></a>
-    <nav>
-      <a routerLink="/dashboard" class="nav-link">Dashboard</a>
+    <a routerLink="/" class="nav-link">
+      <h1>Spendwise</h1>
+    </a>
+    <nav role="navigation">
+      <a routerLink="/dashboard" class="nav-link" aria-label="Go to dashboard page">Dashboard</a>
       <a routerLink="/profile" class="nav-link">Profile</a>
       <button class="logout-btn" (click)="logout()">Logout</button>
     </nav>
   </header>
-  <main>
+  <main role="main">
     <h2>Spend & Expense Ratio</h2>
     <div *ngIf="error" class="error">{{ error }}</div>
     <div *ngIf="!summary" class="loading">Loading data...</div>
     <div class="bento-grid" *ngIf="summary">
       <div class="bento-item chart-item">
         <h3>Expense Breakdown</h3>
-        <div class="chart-container">
-          <canvas baseChart [data]="pieChartData" [type]="pieChartType" [options]="pieChartOptions"></canvas>
-        </div>
+        <!-- <div class="chart-container">
+          <canvas baseChart [data]="pieChartData" [type]="pieChartType" [options]="pieChartOptions" role="img"></canvas>
+        </div> -->
+        <figure class="chart-container">
+          <canvas 
+            baseChart 
+            [data]="pieChartData" 
+            [type]="pieChartType" 
+            [options]="pieChartOptions" 
+            role="img"
+            aria-label="Pie chart showing category breakdown of expenses"></canvas>
+          <figcaption>Visual representation of expenses by category</figcaption>
+        </figure>
+
       </div>
       <div class="bento-item summary-item">
         <h3>Summary</h3>
