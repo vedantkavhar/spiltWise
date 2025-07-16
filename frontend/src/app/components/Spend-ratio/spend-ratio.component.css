@@ -114,7 +114,9 @@ nav {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
+  transition:
+    width 0.6s ease,
+    height 0.6s ease;
 }
 
 .logout-btn:hover::before {
@@ -198,8 +200,12 @@ h2 {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeInUp {
@@ -214,9 +220,15 @@ h2 {
 }
 
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Grid Items */
@@ -379,7 +391,9 @@ canvas {
     grid-template-columns: 1fr;
   }
 
-  .chart-item, .summary-item, .category-item {
+  .chart-item,
+  .summary-item,
+  .category-item {
     grid-column: span 1;
   }
 
@@ -431,7 +445,9 @@ canvas {
     font-size: 1.4rem;
   }
 
-  .stat-label, .category-name, .category-amount {
+  .stat-label,
+  .category-name,
+  .category-amount {
     font-size: 0.85rem;
   }
 

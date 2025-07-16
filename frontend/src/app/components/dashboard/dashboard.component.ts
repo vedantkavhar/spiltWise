@@ -11,7 +11,7 @@ import { ExpenseExportService } from './expense-export.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule ],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -68,7 +68,7 @@ export class DashboardComponent {
         const errorMessage = err?.error?.message || 'Failed to load categories';
         this.toastService.show(errorMessage, 'error');
         console.error('Error loading categories:', err);
-      }
+      },
     });
   }
   // Fetch expenses from backend
@@ -125,10 +125,7 @@ export class DashboardComponent {
     if (!this.editingExpense || !this.editingExpense._id) return;
     this.expenseOperations.updateExpense(this.editingExpense._id, this.formExpense).subscribe({
       next: (updatedExpense) => {
-        this.originalExpenses = this.expenseOperations.updateLocalExpenses(
-          this.originalExpenses,
-          updatedExpense
-        );
+        this.originalExpenses = this.expenseOperations.updateLocalExpenses(this.originalExpenses, updatedExpense);
         this.filterExpenses();
         this.resetForm();
         this.editingExpense = null;

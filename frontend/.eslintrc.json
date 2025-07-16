@@ -1,0 +1,33 @@
+{
+  "root": true,
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": ["tsconfig.json"],
+        "sourceType": "module"
+      },
+      "plugins": ["@typescript-eslint", "@angular-eslint"],
+      "extends": ["plugin:@angular-eslint/recommended", "plugin:@typescript-eslint/recommended"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+      }
+    },
+    {
+      "files": ["*.html"],
+      "plugins": ["@angular-eslint/template"],
+      "extends": ["plugin:@angular-eslint/template/recommended"]
+    },
+    {
+      "files": ["*.{js,ts,html,css}"],
+      "plugins": ["prettier"],
+      "extends": ["plugin:prettier/recommended"],
+      "rules": {
+        "prettier/prettier": "error"
+      }
+    }
+  ],
+  "ignorePatterns": ["node_modules/", "dist/", "**/*.spec.ts"]
+}

@@ -13,5 +13,5 @@ export const routes: Routes = [
   { path: 'spend-ratio', component: SpendRatioComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: '**', redirectTo: '', pathMatch: 'full' } // Wildcard route redirects to homepage
+  { path: '**', redirectTo: '', pathMatch: 'full' }, // Wildcard route redirects to homepage
 ];

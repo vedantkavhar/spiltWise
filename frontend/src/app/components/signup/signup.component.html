@@ -5,9 +5,17 @@
     <form (ngSubmit)="onSubmit()" #signupForm="ngForm" [class.disabled]="isLoading">
       <!-- Username -->
       <div class="form-group">
-        <input type="text" id="username" [(ngModel)]="username" name="username" required minlength="3"
-          #usernameField="ngModel" [class.invalid]="usernameField.invalid && usernameField.touched"
-          placeholder="Enter your username" />
+        <input
+          type="text"
+          id="username"
+          [(ngModel)]="username"
+          name="username"
+          required
+          minlength="3"
+          #usernameField="ngModel"
+          [class.invalid]="usernameField.invalid && usernameField.touched"
+          placeholder="Enter your username"
+        />
         <div class="field-error" *ngIf="usernameField.invalid && usernameField.touched">
           <small *ngIf="usernameField.errors?.['required']">Username is required</small>
           <small *ngIf="usernameField.errors?.['minlength']">At least 3 characters</small>
@@ -16,21 +24,36 @@
 
       <!-- Email -->
       <div class="form-group">
-        <input type="email" id="email" [(ngModel)]="email" name="email" required email #emailField="ngModel"
-          [class.invalid]="emailField.invalid && emailField.touched" placeholder="Enter your email" />
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          required
+          email
+          #emailField="ngModel"
+          [class.invalid]="emailField.invalid && emailField.touched"
+          placeholder="Enter your email"
+        />
         <div class="field-error" *ngIf="emailField.invalid && emailField.touched">
           <small *ngIf="emailField.errors?.['required']">Email is required</small>
           <small *ngIf="emailField.errors?.['email']">Enter a valid email</small>
         </div>
       </div>
 
-
-
       <!-- Password -->
       <div class="form-group">
-        <input type="password" id="password" [(ngModel)]="password" name="password" required minlength="6"
-          #passwordField="ngModel" [class.invalid]="passwordField.invalid && passwordField.touched"
-          placeholder="Enter your password" />
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          minlength="6"
+          #passwordField="ngModel"
+          [class.invalid]="passwordField.invalid && passwordField.touched"
+          placeholder="Enter your password"
+        />
         <div class="field-error" *ngIf="passwordField.invalid && passwordField.touched">
           <small *ngIf="passwordField.errors?.['required']">Password is required</small>
           <small *ngIf="passwordField.errors?.['minlength']">At least 6 characters</small>
@@ -39,10 +62,16 @@
 
       <!-- Confirm Password -->
       <div class="form-group">
-        <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required
+        <input
+          type="password"
+          id="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          required
           #confirmPasswordField="ngModel"
           [class.invalid]="(confirmPasswordField.invalid && confirmPasswordField.touched) || passwordMismatch"
-          placeholder="Confirm your password" />
+          placeholder="Confirm your password"
+        />
         <div class="field-error" *ngIf="confirmPasswordField.invalid && confirmPasswordField.touched">
           <small *ngIf="confirmPasswordField.errors?.['required']">Confirmation required</small>
         </div>
@@ -52,8 +81,12 @@
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" [disabled]="!signupForm.valid || passwordMismatch || isLoading" [class.loading]="isLoading"
-        class="action-btn submit-btn">
+      <button
+        type="submit"
+        [disabled]="!signupForm.valid || passwordMismatch || isLoading"
+        [class.loading]="isLoading"
+        class="action-btn submit-btn"
+      >
         <span *ngIf="!isLoading">Sign Up</span>
         <span *ngIf="isLoading" class="spinner"></span>
         <span *ngIf="isLoading">Signing Up...</span>
@@ -61,15 +94,18 @@
 
       <!-- Switch to Signin -->
       <p class="auth-link">
-        Already have an account? <a routerLink="/signin">Sign In</a>
+        Already have an account?
+        <a routerLink="/signin">Sign In</a>
       </p>
     </form>
 
     <!-- Error Modal -->
-    <div *ngIf="showErrorModal"
-      class="error-modal fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg z-50">
-      <strong>Error:</strong> {{ error }}
+    <div
+      *ngIf="showErrorModal"
+      class="error-modal fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded shadow-lg z-50"
+    >
+      <strong>Error:</strong>
+      {{ error }}
     </div>
-
   </div>
 </div>

@@ -20,7 +20,7 @@ export class ToastService {
     if (type === 'clear') {
       throw new Error('Use clear() method to clear toasts');
     }
-    
+
     const toast: Toast = {
       id: ++this.idCounter,
       message,

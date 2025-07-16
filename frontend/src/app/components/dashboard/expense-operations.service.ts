@@ -15,17 +15,13 @@ export class ExpenseOperationsService {
   loadCategories(): Observable<Category[]> {
     return this.expenseService.getCategories();
   }
-    // Fetch expenses for a specific period
+  // Fetch expenses for a specific period
   loadExpenses(period: string): Observable<Expense[]> {
     return this.expenseService.getExpenses(period);
   }
-    // Fetch all expenses
+  // Fetch all expenses
   addExpense(formExpense: Partial<Expense>): Observable<Expense> {
-    if (
-      !formExpense.description ||
-      !formExpense.amount ||
-      (!formExpense.category && formExpense.type === 'Expense')
-    ) {
+    if (!formExpense.description || !formExpense.amount || (!formExpense.category && formExpense.type === 'Expense')) {
       throw new Error('Description, amount, and category are required');
     }
     if (!formExpense.date) {
@@ -33,18 +29,18 @@ export class ExpenseOperationsService {
     }
     return this.expenseService.addExpense(formExpense);
   }
-    // Prepare expense data for editing
+  // Prepare expense data for editing
   prepareEditExpense(expense: Expense): Partial<Expense> {
     return {
       ...expense,
       date: new Date(expense.date).toISOString().split('T')[0],
     };
   }
-    // Update an existing expense
+  // Update an existing expense
   updateExpense(id: string, formExpense: Partial<Expense>): Observable<Expense> {
     return this.expenseService.updateExpense(id, formExpense);
   }
-    // Filter expenses based on category, period, and search query
+  // Filter expenses based on category, period, and search query
   updateLocalExpenses(expenses: Expense[], updatedExpense: Expense): Expense[] {
     const index = expenses.findIndex((e) => e._id === updatedExpense._id);
     if (index !== -1) {
@@ -53,8 +49,7 @@ export class ExpenseOperationsService {
     return expenses;
   }
 
-  
   deleteExpense(expenseId: string): Observable<void> {
-    return this.expenseService.deleteExpense(expenseId).pipe(map(()=>{}));
+    return this.expenseService.deleteExpense(expenseId).pipe(map(() => {}));
   }
 }

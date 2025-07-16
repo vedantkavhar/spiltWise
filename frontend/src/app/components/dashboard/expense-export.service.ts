@@ -46,12 +46,12 @@ export class ExpenseExportService {
     // Table
     autoTable(doc, {
       head: [['Date', 'Type', 'Category', 'Amount', 'Description']],
-      body: expenses.map(e => [
+      body: expenses.map((e) => [
         this.formatDate(e.date),
         e.type,
         e.category,
         `${e.amount.toLocaleString()}`,
-        e.description
+        e.description,
       ]),
       startY: 85,
       theme: 'grid',
@@ -62,28 +62,28 @@ export class ExpenseExportService {
         fontStyle: 'bold',
         fontSize: 11,
         halign: 'center',
-        minCellHeight: 6
+        minCellHeight: 6,
       },
       bodyStyles: {
         fontSize: 10,
         cellPadding: 3,
-        valign: 'middle'
+        valign: 'middle',
       },
       alternateRowStyles: {
-        fillColor: [248, 249, 250]
+        fillColor: [248, 249, 250],
       },
       columnStyles: {
         0: { halign: 'center', cellWidth: 35 },
         1: { halign: 'center', cellWidth: 35 },
         2: { halign: 'center', cellWidth: 35 },
         3: { halign: 'right', cellWidth: 30 },
-        4: { halign: 'left', cellWidth: 'auto' }
+        4: { halign: 'left', cellWidth: 'auto' },
       },
       styles: {
         lineColor: [200, 200, 200],
         lineWidth: 0.5,
-        overflow: 'linebreak'
-      }
+        overflow: 'linebreak',
+      },
     });
 
     // Footer on each page
@@ -123,7 +123,7 @@ export class ExpenseExportService {
     subtitleCell.value = 'Expense Report';
     subtitleCell.font = { size: 14, color: { argb: darkText } };
     titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
-subtitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+    subtitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
     // Generated on date
     worksheet.mergeCells('A3:E3');
@@ -141,7 +141,7 @@ subtitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
       '',
       '',
       `Total Expenses: ${totalAmount.toLocaleString()}`,
-      `Number of Expenses: ${expenses.length}`
+      `Number of Expenses: ${expenses.length}`,
     ]);
     summaryRow.font = { bold: true };
     summaryRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: lightGray } };
@@ -158,29 +158,23 @@ subtitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
         top: { style: 'thin' },
         bottom: { style: 'thin' },
         left: { style: 'thin' },
-        right: { style: 'thin' }
+        right: { style: 'thin' },
       };
     });
 
     // Table Body
     expenses.forEach((e) => {
-      const row = worksheet.addRow([
-        this.formatDate(e.date),
-        e.type,
-        e.category,
-        e.amount,
-        e.description
-      ]);
+      const row = worksheet.addRow([this.formatDate(e.date), e.type, e.category, e.amount, e.description]);
       row.eachCell((cell, colNumber) => {
         cell.border = {
           top: { style: 'thin' },
           bottom: { style: 'thin' },
           left: { style: 'thin' },
-          right: { style: 'thin' }
+          right: { style: 'thin' },
         };
         cell.alignment = {
           vertical: 'middle',
-          horizontal: colNumber === 4 ? 'right' : 'center'
+          horizontal: colNumber === 4 ? 'right' : 'center',
         };
       });
     });

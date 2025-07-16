@@ -28,13 +28,15 @@ export class SignupComponent implements OnDestroy {
   // 🔧 Added: to access the form reference and reset it
   @ViewChild('signupForm') signupForm!: NgForm;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   // Check if passwords match
   get passwordMismatch(): boolean {
     return this.password !== this.confirmPassword && this.confirmPassword.length > 0;
   }
-
 
   onSubmit(): void {
     // Clear previous messages and timeouts
@@ -53,12 +55,10 @@ export class SignupComponent implements OnDestroy {
       return;
     }
 
- 
-
     this.isLoading = true;
 
     // Call the signup method from AuthService
-    this.authService.signup(this.username, this.email, this.password,).subscribe({
+    this.authService.signup(this.username, this.email, this.password).subscribe({
       next: (response) => {
         console.log('Signup response:', response);
 
@@ -83,14 +83,13 @@ export class SignupComponent implements OnDestroy {
         console.log('Error details:', {
           status: err.status,
           statusText: err.statusText,
-          error: err.error
+          error: err.error,
         });
 
         this.errorTimeout = setTimeout(() => {
           this.closeErrorModal();
         }, 1000);
       },
-
     });
   }
 
@@ -123,7 +122,6 @@ export class SignupComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.clearTimeouts();
   }
-  
 
   // 🔧 Updated: properly reset form state (not just field values)
   private clearForm(): void {

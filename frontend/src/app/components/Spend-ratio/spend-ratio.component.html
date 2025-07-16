@@ -15,11 +15,7 @@
       <div class="bento-item chart-item">
         <h3>Expense Breakdown</h3>
         <div class="chart-container">
-          <canvas baseChart
-            [data]="pieChartData"
-            [type]="pieChartType"
-            [options]="pieChartOptions"
-          ></canvas>
+          <canvas baseChart [data]="pieChartData" [type]="pieChartType" [options]="pieChartOptions"></canvas>
         </div>
       </div>
       <div class="bento-item summary-item">
@@ -27,7 +23,7 @@
         <div class="stat-grid">
           <div class="stat-card">
             <p class="stat-label">Total Expenses</p>
-            <p class="stat-value">{{ summary.total | currency:'INR' }}</p>
+            <p class="stat-value">{{ summary.total | currency: 'INR' }}</p>
           </div>
           <div class="stat-card">
             <p class="stat-label">Number of Expenses</p>
@@ -41,9 +37,9 @@
           <div class="category-card" *ngFor="let cat of summary.byCategory">
             <div class="category-title">
               <span class="category-name">{{ cat.category }}</span>
-              <span class="category-amount">{{ cat.total | currency:'INR' }}</span>
+              <span class="category-amount">{{ cat.total | currency: 'INR' }}</span>
             </div>
-            <p class="category-percentage">{{ (cat.total / summary.total * 100) | number:'1.2-2' }}%</p>
+            <p class="category-percentage">{{ (cat.total / summary.total) * 100 | number: '1.2-2' }}%</p>
           </div>
         </div>
         <ng-template #noData>
