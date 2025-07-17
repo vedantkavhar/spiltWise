@@ -8,7 +8,7 @@ import { ToastService } from '../../services/toast.service';
 })
 export class ExpenseOperationsService {
   constructor(
-    private expenseService: ExpenseService,
+    public expenseService: ExpenseService,
     private toastService: ToastService
   ) {}
   // Fetch categories from backend
@@ -17,7 +17,9 @@ export class ExpenseOperationsService {
   }
   // Fetch expenses for a specific period
   loadExpenses(period: string): Observable<Expense[]> {
-    return this.expenseService.getExpenses(period);
+    return this.expenseService.getExpenses({ period }).pipe(
+      map(res => res.expenses)
+    );
   }
   // Fetch all expenses
   addExpense(formExpense: Partial<Expense>): Observable<Expense> {

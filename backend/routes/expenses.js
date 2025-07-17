@@ -11,16 +11,54 @@ const User = require('../models/User');
 // Get all expenses for a user (with optional category and type filter)
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const { category, type } = req.query;
+    const { category, type, period, search, sort, page = 1, pageSize = 5 } = req.query;
     const query = { userId: req.user.userId };
+
+    // Category filter
     if (category && category !== 'All') {
       query.category = category;
     }
+    // Type filter
     if (type) {
       query.type = type;
     }
-    const expenses = await Expense.find(query).sort({ date: -1 });
-    res.json(expenses);
+
+    // Period filter (Weekly/Monthly)
+    if (period && period !== 'All') {
+      const days = period === 'Weekly' ? 7 : 30;
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
+      query.date = { $gte: startDate };
+    }
+
+    // Search filter
+    if (search) {
+      const regex = new RegExp(search, 'i');
+      query.$or = [
+        { description: regex },
+        { category: regex },
+        { amount: isNaN(Number(search)) ? undefined : Number(search) },
+        { date: { $regex: regex } }
+      ].filter(Boolean);
+    }
+
+    // Sorting
+    let sortOption = { date: -1 };
+    if (sort === 'date-asc') sortOption = { date: 1 };
+    if (sort === 'price-desc') sortOption = { amount: -1 };
+    if (sort === 'price-asc') sortOption = { amount: 1 };
+
+    // Pagination
+    const skip = (parseInt(page) - 1) * parseInt(pageSize);
+    const expenses = await Expense.find(query)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(parseInt(pageSize));
+
+    // For total count (for pagination)
+    const total = await Expense.countDocuments(query);
+
+    res.json({ expenses, total });
   } catch (error) {
     console.error('Get expenses error:', error);
     res.status(500).json({ message: 'Server error' });

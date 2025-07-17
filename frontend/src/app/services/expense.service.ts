@@ -46,11 +46,38 @@ export class ExpenseService {
       Authorization: `Bearer ${token}`,
     });
   }
-  // Fetches expenses from the backend, optionally filtered by category
-  getExpenses(category?: string): Observable<Expense[]> {
-    const url = category && category !== 'All' ? `${this.apiUrl}?category=${category}` : this.apiUrl;
-    return this.http.get<Expense[]>(url, { headers: this.getHeaders() });
+// Fetches expenses from the backend, optionally filtered by category
+  // getExpenses(category?: string): Observable<Expense[]> {
+  //   const url = category && category !== 'All' ? `${this.apiUrl}?category=${category}` : this.apiUrl;
+  //   return this.http.get<Expense[]>(url, { headers: this.getHeaders() });
+  // }
+
+// Fetches expenses from the backend with filtering, search, sort, and pagination
+getExpenses(options?: {
+  category?: string;
+  type?: string;
+  period?: string;
+  search?: string;
+  sort?: string;
+  page?: number;
+  pageSize?: number;
+}): Observable<{ expenses: Expense[]; total: number }> {
+  let params: any = {};
+  if (options) {
+    if (options.category) params.category = options.category;
+    if (options.type) params.type = options.type;
+    if (options.period) params.period = options.period;
+    if (options.search) params.search = options.search;
+    if (options.sort) params.sort = options.sort;
+    if (options.page) params.page = options.page;
+    if (options.pageSize) params.pageSize = options.pageSize;
+
   }
+  return this.http.get<{ expenses: Expense[]; total: number }>(this.apiUrl, {
+    headers: this.getHeaders(),
+    params,
+  });
+}
 
   // Fetches all available categories from the backend
   getCategories(): Observable<Category[]> {
