@@ -6,7 +6,7 @@ import { AuthService, User } from '../../services/auth.service';
 import { Expense, Category } from '../../services/expense.service';
 import { ToastService } from '../../services/toast.service';
 import { ExpenseOperationsService } from './expense-operations.service';
-import { ExpenseFilterService } from './expense-filter.service';
+// import { ExpenseFilterService } from './expense-filter.service';
 import { ExpenseExportService } from './expense-export.service';
 @Component({
   selector: 'app-dashboard',
@@ -40,12 +40,14 @@ export class DashboardComponent {
   currentPage: number = 1;
   pageSize: number = 5;
   filteredExpenses: Expense[] = [];
+  totalPages: number = 1;
+  totalExpenses: number = 0;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private expenseOperations: ExpenseOperationsService,
-    private expenseFilter: ExpenseFilterService,
+    // private expenseFilter: ExpenseFilterService,
     private expenseExport: ExpenseExportService,
     private toastService: ToastService
   ) {
@@ -72,32 +74,49 @@ export class DashboardComponent {
     });
   }
   // Fetch expenses from backend
-  loadExpenses(): void {
-    this.expenseOperations.loadExpenses('All').subscribe({
-      next: (expenses) => {
-        this.originalExpenses = expenses;
-        this.filterExpenses();
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Failed to load expenses';
-        this.toastService.show(this.error, 'error');
-      },
-    });
-  }
+  // ...existing code...
+
+// Fetch expenses from backend with filters and pagination
+loadExpenses(): void {
+  const options = {
+    category: this.selectedCategory !== 'All' ? this.selectedCategory : undefined,
+    period: this.selectedPeriod !== 'All' ? this.selectedPeriod : undefined,
+    search: this.searchQuery || undefined,
+    sort: this.sortOption,
+    page: this.currentPage,
+    pageSize: this.pageSize,
+  };
+  this.loading = true;
+  this.expenseOperations.expenseService.getExpenses(options).subscribe({
+    next: (res) => {
+      this.expenses = res.expenses;
+      this.totalExpenses = res.total;
+      this.updatePagination(res.total, this.pageSize);
+      this.loading = false;
+    },
+    error: (err) => {
+      this.error = err.error?.message || 'Failed to load expenses';
+      this.toastService.show(this.error, 'error');
+      this.loading = false;
+    },
+  });
+}
+
+// ...existing code...
   // Filter and paginate expenses based on selected criteria
   filterExpenses(resetPage: boolean = false): void {
-    const result = this.expenseFilter.filterExpenses(
-      this.originalExpenses,
-      this.selectedCategory,
-      this.selectedPeriod,
-      this.searchQuery,
-      this.sortOption,
-      this.currentPage,
-      this.pageSize,
-      resetPage
-    );
-    this.filteredExpenses = result.filteredExpenses;
-    this.expenses = result.paginatedExpenses;
+    // const result = this.expenseFilter.filterExpenses(
+    //   this.originalExpenses,
+    //   this.selectedCategory,
+    //   this.selectedPeriod,
+    //   this.searchQuery,
+    //   this.sortOption,
+    //   this.currentPage,
+    //   this.pageSize,
+    //   resetPage
+    // );
+    // this.filteredExpenses = result.filteredExpenses;
+    // this.expenses = result.paginatedExpenses;
     if (resetPage) this.currentPage = 1;
   }
   // Add a new expense
@@ -179,8 +198,18 @@ export class DashboardComponent {
     }, 2000);
   }
   // Get total expenses based on current filters
+  updatePagination(total: number, pageSize: number) {
+    this.totalPages = Math.ceil(total / pageSize);
+  }
+
   getTotalExpenses(): number {
-    return this.expenseFilter.getTotalExpenses(this.expenses);
+    return this.totalExpenses;
+  }
+
+  changePage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.loadExpenses(); // Make sure this method fetches expenses for the current page
   }
 
   downloadPDF(): void {
@@ -197,13 +226,13 @@ export class DashboardComponent {
     this.filterExpenses(true);
   }
 
-  get totalPages(): number {
-    return this.expenseFilter.getTotalPages(this.filteredExpenses, this.pageSize);
-  }
+  // get totalPages(): number {
+  //   return this.expenseFilter.getTotalPages(this.filteredExpenses, this.pageSize);
+  // }
 
-  changePage(page: number): void {
-    if (page < 1 || page > this.totalPages) return;
-    this.currentPage = page;
-    this.filterExpenses();
-  }
+  // changePage(page: number): void {
+  //   if (page < 1 || page > this.totalPages) return;
+  //   this.currentPage = page;
+  //   this.filterExpenses();
+  // }
 }
