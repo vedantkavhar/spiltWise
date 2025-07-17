@@ -29,6 +29,7 @@ router.get('/', authMiddleware, async (req, res) => {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - days);
       query.date = { $gte: startDate };
+      console.log("period filter logic from backend");
     }
 
     // Search filter
@@ -40,6 +41,7 @@ router.get('/', authMiddleware, async (req, res) => {
         { amount: isNaN(Number(search)) ? undefined : Number(search) },
         { date: { $regex: regex } }
       ].filter(Boolean);
+      console.log("search filter logic from backend");
     }
 
     // Sorting
@@ -47,6 +49,7 @@ router.get('/', authMiddleware, async (req, res) => {
     if (sort === 'date-asc') sortOption = { date: 1 };
     if (sort === 'price-desc') sortOption = { amount: -1 };
     if (sort === 'price-asc') sortOption = { amount: 1 };
+    console.log("sort filter logic from backend");
 
     // Pagination
     const skip = (parseInt(page) - 1) * parseInt(pageSize);
@@ -54,9 +57,11 @@ router.get('/', authMiddleware, async (req, res) => {
       .sort(sortOption)
       .skip(skip)
       .limit(parseInt(pageSize));
+    console.log("expenses fetched from backend");
 
     // For total count (for pagination)
     const total = await Expense.countDocuments(query);
+    console.log("total expenses count logic from backend");
 
     res.json({ expenses, total });
   } catch (error) {

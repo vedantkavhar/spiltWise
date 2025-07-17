@@ -105,7 +105,7 @@ loadExpenses(): void {
   });
 }
 
-// ...existing code...
+
   // Filter and paginate expenses based on selected criteria
   filterExpenses(resetPage: boolean = false): void {
     // const result = this.expenseFilter.filterExpenses(
@@ -121,7 +121,9 @@ loadExpenses(): void {
     // this.filteredExpenses = result.filteredExpenses;
     // this.expenses = result.paginatedExpenses;
     if (resetPage) this.currentPage = 1;
+    this.loadExpenses();
   }
+
   // Add a new expense
   addExpense(): void {
     this.expenseOperations.addExpense(this.formExpense).subscribe({
