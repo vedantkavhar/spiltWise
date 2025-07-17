@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+// import { FormsModule } from '@angular/forms';q
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
-
+//formsmdoule comemnted
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [FormsModule, RouterModule, CommonModule],
+  imports: [ RouterModule, CommonModule],
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css'],
 })
