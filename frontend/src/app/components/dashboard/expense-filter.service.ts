@@ -20,9 +20,7 @@ export class ExpenseFilterService {
 
     // Filter by Category
     if (selectedCategory !== 'All') {
-      filtered = filtered.filter(
-        (expense) => expense.category === selectedCategory
-      );
+      filtered = filtered.filter((expense) => expense.category === selectedCategory);
     }
 
     // Filter by Period

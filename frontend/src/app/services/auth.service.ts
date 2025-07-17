@@ -18,10 +18,13 @@ export class AuthService {
   // Base URL for authentication endpoints
   private apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   // Registers a new user and returns a token and user object
-  signup(username: string, email: string, password: string, ): Observable<{ token: string; user: User }> {
+  signup(username: string, email: string, password: string): Observable<{ token: string; user: User }> {
     return this.http.post<{ token: string; user: User }>(`${this.apiUrl}/signup`, {
       username,
       email,
@@ -63,21 +66,21 @@ export class AuthService {
     sessionStorage.setItem('token', token);
     sessionStorage.setItem('user', JSON.stringify(user));
   }
- 
+
   getToken(): string | null {
     return sessionStorage.getItem('token');
   }
- 
+
   getUser(): User | null {
     const user = sessionStorage.getItem('user');
     return user && user !== 'null' ? JSON.parse(user) : null;
   }
- 
+
   // Checks if the user is authenticated (token exists)
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
- 
+
   logout(): void {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('user');

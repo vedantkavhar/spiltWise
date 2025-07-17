@@ -8,10 +8,13 @@ import { ToastService } from '../../services/toast.service';
 import { ExpenseOperationsService } from './expense-operations.service';
 // import { ExpenseFilterService } from './expense-filter.service';
 import { ExpenseExportService } from './expense-export.service';
+
+// formsmodukle removeed from imporr signin and dashboard component 
 @Component({
+
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule ],
+  imports: [CommonModule, RouterModule,FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -70,7 +73,7 @@ export class DashboardComponent {
         const errorMessage = err?.error?.message || 'Failed to load categories';
         this.toastService.show(errorMessage, 'error');
         console.error('Error loading categories:', err);
-      }
+      },
     });
   }
   // Fetch expenses from backend
@@ -144,10 +147,7 @@ loadExpenses(): void {
     if (!this.editingExpense || !this.editingExpense._id) return;
     this.expenseOperations.updateExpense(this.editingExpense._id, this.formExpense).subscribe({
       next: (updatedExpense) => {
-        this.originalExpenses = this.expenseOperations.updateLocalExpenses(
-          this.originalExpenses,
-          updatedExpense
-        );
+        this.originalExpenses = this.expenseOperations.updateLocalExpenses(this.originalExpenses, updatedExpense);
         this.filterExpenses();
         this.resetForm();
         this.editingExpense = null;
@@ -236,3 +236,5 @@ loadExpenses(): void {
   //   this.filterExpenses();
   // }
 }
+
+

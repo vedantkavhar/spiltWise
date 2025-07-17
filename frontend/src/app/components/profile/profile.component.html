@@ -1,23 +1,37 @@
 <div class="profile-container">
   <header>
     <a routerLink="/" class="nav-link"><h1>Spendwise</h1></a>
-    <nav>
-      <a routerLink="/dashboard" class="nav-link">Dashboard</a>
+    <nav role="navigation">
+      <a routerLink="/dashboard" class="nav-link" aria-label="Go to dashboard page">Dashboard</a>
       <a routerLink="/spend-ratio" class="nav-link">Spend Ratio</a>
       <button class="logout-btn" (click)="logout()">Logout</button>
     </nav>
   </header>
-  <main>
+  <main role="main">
     <h2>Your Spendwise Profile</h2>
-    <div *ngIf="error" class="error" [ngClass]="{'success': error.includes('successfully')}">{{ error }}</div>
+    <div *ngIf="error" class="error" [ngClass]="{ success: error.includes('successfully') }">{{ error }}</div>
     <div *ngIf="!user || !summary" class="loading">Loading your profile...</div>
     <div class="bento-grid" *ngIf="user && summary">
       <div class="bento-item avatar-item">
         <h3>Profile Picture</h3>
-        <div class="avatar" (click)="triggerFileInput()" [ngStyle]="{'background': (user.profilePicture && !imageLoadError) ? 'none' : 'linear-gradient(135deg, #6c63ff, #a29bfe)'}">
-          <img *ngIf="user.profilePicture && !imageLoadError" [src]="getImageUrl(user.profilePicture)" alt="Profile Picture" (error)="onImageError($event)" class="avatar-image" />
-          <span *ngIf="!user.profilePicture || imageLoadError" class="avatar-initial">{{ user.username.charAt(0).toUpperCase() }}</span>
-          <div class="avatar-overlay" [ngClass]="{'uploading': isUploading}">
+        <div
+          class="avatar"
+          (click)="triggerFileInput()"
+          [ngStyle]="{
+            background: user.profilePicture && !imageLoadError ? 'none' : 'linear-gradient(135deg, #6c63ff, #a29bfe)',
+          }"
+        >
+          <img
+            *ngIf="user.profilePicture && !imageLoadError"
+            [src]="getImageUrl(user.profilePicture)"
+            alt="Profile Picture"
+            (error)="onImageError($event)"
+            class="avatar-image"
+          />
+          <span *ngIf="!user.profilePicture || imageLoadError" class="avatar-initial">
+            {{ user.username.charAt(0).toUpperCase() }}
+          </span>
+          <div class="avatar-overlay" [ngClass]="{ uploading: isUploading }">
             {{ isUploading ? 'Uploading...' : 'Change Photo' }}
           </div>
         </div>
@@ -35,14 +49,13 @@
             <span class="info-value">{{ user.email }}</span>
           </div>
         </div>
-        
       </div>
       <div class="bento-item stats-item">
         <h3>Spending Analytics</h3>
         <div class="stat-grid">
           <div class="stat-card">
             <p class="stat-label">Total Expenses</p>
-            <p class="stat-value">{{ summary.total | currency:'INR' }}</p>
+            <p class="stat-value">{{ summary.total | currency: 'INR' }}</p>
           </div>
           <div class="stat-card">
             <p class="stat-label">Number of Expenses</p>
@@ -56,7 +69,7 @@
           <div class="category-card" *ngFor="let cat of summary.byCategory">
             <div class="category-title">
               <span class="category-name">{{ cat.category }}</span>
-              <span class="category-amount">{{ cat.total | currency:'INR' }}</span>
+              <span class="category-amount">{{ cat.total | currency: 'INR' }}</span>
             </div>
             <div class="progress-bar">
               <div class="progress" [style.width.%]="getCategoryProgress(cat.total)"></div>

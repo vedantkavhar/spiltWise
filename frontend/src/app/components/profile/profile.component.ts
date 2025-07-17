@@ -1,4 +1,3 @@
-
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { AuthService, User } from '../../services/auth.service';
 import { ExpenseService, ExpenseSummary } from '../../services/expense.service';

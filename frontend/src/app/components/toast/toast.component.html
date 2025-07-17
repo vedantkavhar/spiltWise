@@ -1,8 +1,15 @@
 <div class="toast-container">
-  <div *ngFor="let toast of toasts" class="toast" [ngClass]="toast.type" #toastElement [style.--progress-duration]="(toast.duration ?? 3000) + 'ms'">
+  <div
+    *ngFor="let toast of toasts"
+    class="toast"
+    role="alert"
+    [ngClass]="toast.type"
+    #toastElement
+    [style.--progress-duration]="(toast.duration ?? 3000) + 'ms'"
+  >
     <div class="toast-content">
       <span class="toast-message">{{ toast.message }}</span>
-      <button class="close-btn" (click)="closeToast(toast)" title="Close">
+      <button class="close-btn" (click)="closeToast(toast)" title="Close" aria-label="Close notification">
         <span>×</span>
       </button>
     </div>

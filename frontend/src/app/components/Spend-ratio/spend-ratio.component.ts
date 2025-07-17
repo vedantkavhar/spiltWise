@@ -12,29 +12,40 @@ import { ExpenseService, ExpenseSummary } from '../../services/expense.service';
   standalone: true,
   imports: [CommonModule, RouterModule, NgChartsModule],
   templateUrl: './spend-ratio.component.html',
-  styleUrls: ['./spend-ratio.component.css']
-}) 
-
+  styleUrls: ['./spend-ratio.component.css'],
+})
 export class SpendRatioComponent implements OnInit {
   summary: ExpenseSummary | null = null;
   error = '';
 
   colorPalette = [
-  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-  '#FF9F40', '#C9CBCF', '#8BC34A', '#E91E63', '#00BCD4',
-  '#CDDC39', '#9C27B0', '#FFC107', '#795548', '#607D8B'
-];
+    '#FF6384',
+    '#36A2EB',
+    '#FFCE56',
+    '#4BC0C0',
+    '#9966FF',
+    '#FF9F40',
+    '#C9CBCF',
+    '#8BC34A',
+    '#E91E63',
+    '#00BCD4',
+    '#CDDC39',
+    '#9C27B0',
+    '#FFC107',
+    '#795548',
+    '#607D8B',
+  ];
 
   // Data structure for the pie chart
 
   pieChartData: ChartData<'pie'> = {
     labels: [],
     datasets: [
-    {
-      data: [],
-      backgroundColor: [],
-    },
-  ]
+      {
+        data: [],
+        backgroundColor: [],
+      },
+    ],
   };
 
   pieChartType: ChartType = 'pie';
@@ -48,9 +59,9 @@ export class SpendRatioComponent implements OnInit {
         labels: {
           color: '#ffffff', // makes the legend text white
           font: {
-            size: 14
-          }
-        }
+            size: 14,
+          },
+        },
       },
       tooltip: {
         callbacks: {
@@ -72,7 +83,7 @@ export class SpendRatioComponent implements OnInit {
     private authService: AuthService,
     private expenseService: ExpenseService,
     private router: Router
-  ) { }
+  ) {}
 
   // Redirect to signin if not authenticated
 
@@ -84,7 +95,7 @@ export class SpendRatioComponent implements OnInit {
     }
   }
 
-    // Loads the expense summary from the backend
+  // Loads the expense summary from the backend
   loadSummary(): void {
     this.expenseService.getExpenseSummary().subscribe({
       next: (summary) => {
@@ -112,9 +123,21 @@ export class SpendRatioComponent implements OnInit {
         {
           data: categories.map((c) => c.total),
           backgroundColor: [
-            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-    '#FF9F40', '#C9CBCF', '#8BC34A', '#E91E63', '#00BCD4',
-    '#CDDC39', '#9C27B0', '#FFC107', '#795548', '#607D8B'
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56',
+            '#4BC0C0',
+            '#9966FF',
+            '#FF9F40',
+            '#C9CBCF',
+            '#8BC34A',
+            '#E91E63',
+            '#00BCD4',
+            '#CDDC39',
+            '#9C27B0',
+            '#FFC107',
+            '#795548',
+            '#607D8B',
           ],
         },
       ],

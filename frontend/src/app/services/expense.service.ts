@@ -32,11 +32,14 @@ export interface ExpenseSummary {
 })
 export class ExpenseService {
   private apiUrl = `${environment.apiUrl}/expenses`;
-  private apiUrls =`${environment.apiUrl}/categories`;
+  private apiUrls = `${environment.apiUrl}/categories`;
   // private apiUrls = 'http://localhost:5000/api/categories'; // your backend URL
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
-// Helper method to get HTTP headers with JWT token for authentication
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
+  // Helper method to get HTTP headers with JWT token for authentication
   private getHeaders(): HttpHeaders {
     const token = this.authService.getToken();
     return new HttpHeaders({
@@ -68,6 +71,7 @@ getExpenses(options?: {
     if (options.sort) params.sort = options.sort;
     if (options.page) params.page = options.page;
     if (options.pageSize) params.pageSize = options.pageSize;
+
   }
   return this.http.get<{ expenses: Expense[]; total: number }>(this.apiUrl, {
     headers: this.getHeaders(),
@@ -75,24 +79,24 @@ getExpenses(options?: {
   });
 }
 
-// Fetches all available categories from the backend
+  // Fetches all available categories from the backend
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(this.apiUrls);
   }
 
-// Fetches a summary of expenses for the authenticated user
+  // Fetches a summary of expenses for the authenticated user
   getExpenseSummary(): Observable<ExpenseSummary> {
     return this.http.get<ExpenseSummary>(`${this.apiUrl}/summary`, { headers: this.getHeaders() });
   }
-// Adds a new expense for the authenticated user
+  // Adds a new expense for the authenticated user
   addExpense(expense: Partial<Expense>): Observable<Expense> {
     return this.http.post<Expense>(this.apiUrl, expense, { headers: this.getHeaders() });
   }
-// Updates an existing expense by ID
+  // Updates an existing expense by ID
   updateExpense(id: string, expense: Partial<Expense>): Observable<Expense> {
     return this.http.put<Expense>(`${this.apiUrl}/${id}`, expense, { headers: this.getHeaders() });
   }
-// Deletes an expense by ID
+  // Deletes an expense by ID
   deleteExpense(id: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
