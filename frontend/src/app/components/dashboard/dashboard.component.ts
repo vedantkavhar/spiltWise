@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-// import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { AuthService, User } from '../../services/auth.service';
 import { Expense, Category } from '../../services/expense.service';
 import { ToastService } from '../../services/toast.service';
@@ -14,7 +14,7 @@ import { ExpenseExportService } from './expense-export.service';
 
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })

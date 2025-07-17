@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-// import { FormsModule } from '@angular/forms';q
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
@@ -9,7 +9,7 @@ import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [ RouterModule, CommonModule],
+  imports: [ FormsModule,RouterModule, CommonModule],
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css'],
 })
