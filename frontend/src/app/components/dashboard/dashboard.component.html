@@ -93,7 +93,7 @@
           </div>
           <div class="stat-card">
             <p class="stat-label">Number of Expenses</p>
-            <p class="stat-value">{{ expenses.length }}</p>
+            <p class="stat-value">{{ totalExpenses }}</p>
           </div>
         </div>
       </div>
@@ -159,7 +159,7 @@
                 <td>{{ expense.date | date: 'd MMMM y' }}</td>
                 <td>
                   <button class="action-btn edit-btn" (click)="editExpense(expense)" title="Edit" aria-label="edit an expense">Edit</button>
-                  <button class="action-btn delete-btn" (click)="deleteExpense(expense._id)" title="Delete" aria-label="delete an expense">
+                  <button class="action-btn delete-btn" (click)="deleteExpense(expense.id || expense._id || '')" title="Delete" aria-label="delete an expense">
                     delete
                   </button>
                 </td>
@@ -213,6 +213,8 @@
           <button class="action-btn pdf-btn" (click)="downloadPDF()" title="Download PDF" aria-label="download report as pdf">pdf</button>
           <button class="action-btn excel-btn" (click)="downloadExcel()" title="Download Excel" aria-label="download report as excel">excel</button>
         </div>
+        
+       
       </div>
     </main>
   </div>

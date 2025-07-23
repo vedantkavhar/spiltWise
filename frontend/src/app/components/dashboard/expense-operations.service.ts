@@ -15,9 +15,9 @@ export class ExpenseOperationsService {
   loadCategories(): Observable<Category[]> {
     return this.expenseService.getCategories();
   }
-  // Fetch expenses for a specific period
-  loadExpenses(period: string): Observable<Expense[]> {
-    return this.expenseService.getExpenses({ period }).pipe(
+  // Fetch expenses with options
+  loadExpenses(options?: any): Observable<Expense[]> {
+    return this.expenseService.getExpenses(options).pipe(
       map(res => res.expenses)
     );
   }
@@ -44,7 +44,11 @@ export class ExpenseOperationsService {
   }
   // Filter expenses based on category, period, and search query
   updateLocalExpenses(expenses: Expense[], updatedExpense: Expense): Expense[] {
-    const index = expenses.findIndex((e) => e._id === updatedExpense._id);
+    const updatedId = updatedExpense.id || updatedExpense._id;
+    const index = expenses.findIndex((e) => {
+      const expenseId = e.id || e._id;
+      return expenseId === updatedId;
+    });
     if (index !== -1) {
       expenses[index] = updatedExpense;
     }

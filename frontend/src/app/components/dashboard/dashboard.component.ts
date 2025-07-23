@@ -45,6 +45,7 @@ export class DashboardComponent {
   filteredExpenses: Expense[] = [];
   totalPages: number = 1;
   totalExpenses: number = 0;
+  debugInfo: any = null;
 
   constructor(
     private authService: AuthService,
@@ -146,11 +147,15 @@ loadExpenses(): void {
   }
   // Update an existing expense
   updateExpense(): void {
-    if (!this.editingExpense || !this.editingExpense._id) return;
-    this.expenseOperations.updateExpense(this.editingExpense._id, this.formExpense).subscribe({
+    if (!this.editingExpense) return;
+    const expenseId = this.editingExpense.id || this.editingExpense._id;
+    if (!expenseId) {
+      this.toastService.show('Invalid expense ID', 'error');
+      return;
+    }
+    this.expenseOperations.updateExpense(expenseId, this.formExpense).subscribe({
       next: (updatedExpense) => {
-        this.originalExpenses = this.expenseOperations.updateLocalExpenses(this.originalExpenses, updatedExpense);
-        this.filterExpenses();
+        this.loadExpenses(); // Reload expenses after update
         this.resetForm();
         this.editingExpense = null;
         this.toastService.show('Expense updated successfully', 'success');
@@ -164,10 +169,14 @@ loadExpenses(): void {
   }
   // Delete an expense
   deleteExpense(expenseId: string): void {
+    console.log('Deleting expense with ID:', expenseId);
+    if (!expenseId) {
+      this.toastService.show('Invalid expense ID', 'error');
+      return;
+    }
     this.expenseOperations.deleteExpense(expenseId).subscribe({
       next: () => {
-        this.originalExpenses = this.originalExpenses.filter((e) => e._id !== expenseId);
-        this.filterExpenses();
+        this.loadExpenses(); // Reload expenses after delete
         this.toastService.show('Expense deleted successfully', 'success');
       },
       error: (err) => {
@@ -204,8 +213,19 @@ loadExpenses(): void {
     this.totalPages = Math.ceil(total / pageSize);
   }
 
+  // Get the sum of all expenses
+  private expenseSum: number = 0;
+
   getTotalExpenses(): number {
-    return this.totalExpenses;
+    // Calculate the sum of all expenses
+    this.expenseSum = this.expenses.reduce((sum, expense) => {
+      // Only include expenses, not income
+      if (expense.type === 'Expense') {
+        return sum + expense.amount;
+      }
+      return sum;
+    }, 0);
+    return this.expenseSum;
   }
 
   changePage(page: number) {
@@ -226,6 +246,33 @@ loadExpenses(): void {
 
   onPageSizeChange(): void {
     this.filterExpenses(true);
+  }
+
+  // Debug methods
+  debugDatabase(): void {
+    this.expenseOperations.expenseService.debugExpenses().subscribe({
+      next: (data) => {
+        this.debugInfo = data;
+        console.log('Debug info:', data);
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to debug database';
+        this.toastService.show(this.error, 'error');
+      }
+    });
+  }
+
+  addRealExpense(): void {
+    this.expenseOperations.expenseService.addRealExpense().subscribe({
+      next: (data) => {
+        this.toastService.show(data.message, 'success');
+        this.loadExpenses(); // Reload expenses after adding
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Failed to add real expenses';
+        this.toastService.show(this.error, 'error');
+      }
+    });
   }
 
   // get totalPages(): number {

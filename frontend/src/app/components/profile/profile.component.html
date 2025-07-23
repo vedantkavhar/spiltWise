@@ -55,11 +55,11 @@
         <div class="stat-grid">
           <div class="stat-card">
             <p class="stat-label">Total Expenses</p>
-            <p class="stat-value">{{ summary.total | currency: 'INR' }}</p>
+            <p class="stat-value">{{ getTotalAmount() | currency: 'INR' }}</p>
           </div>
           <div class="stat-card">
             <p class="stat-label">Number of Expenses</p>
-            <p class="stat-value">{{ summary.count }}</p>
+            <p class="stat-value">{{ getTotalCount() }}</p>
           </div>
         </div>
       </div>

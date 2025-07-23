@@ -1,0 +1,1 @@
+@echo off\necho Cleaning project...\ndotnet clean\n\necho Deleting bin and obj directories...\nrmdir /s /q bin\nrmdir /s /q obj\n\necho Restoring packages...\ndotnet restore\n\necho Building project...\ndotnet build\n\necho Done! Run the application with 'dotnet run'\n

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
 // Expense interface representing a single expense record
 export interface Expense {
-  _id: string;
+  _id?: string;  // MongoDB format from Node.js
+  id?: string;   // C# .NET format
   description: string;
   amount: number;
   date: string;
@@ -86,7 +88,22 @@ getExpenses(options?: {
 
   // Fetches a summary of expenses for the authenticated user
   getExpenseSummary(): Observable<ExpenseSummary> {
-    return this.http.get<ExpenseSummary>(`${this.apiUrl}/summary`, { headers: this.getHeaders() });
+    console.log('Requesting expense summary from:', `${this.apiUrl}/summary`);
+    const headers = this.getHeaders();
+    console.log('With headers:', headers);
+    console.log('Auth token:', this.authService.getToken());
+    
+    return this.http.get<ExpenseSummary>(`${this.apiUrl}/summary`, { headers })
+      .pipe(
+        map(summary => {
+          console.log('Raw summary data:', summary);
+          // Ensure byCategory is always an array
+          if (!summary.byCategory) {
+            summary.byCategory = [];
+          }
+          return summary;
+        })
+      );
   }
   // Adds a new expense for the authenticated user
   addExpense(expense: Partial<Expense>): Observable<Expense> {
@@ -99,5 +116,15 @@ getExpenses(options?: {
   // Deletes an expense by ID
   deleteExpense(id: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
+  // Debug endpoint to check database connectivity and data
+  debugExpenses(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/debug`, { headers: this.getHeaders() });
+  }
+
+  // Add real expenses
+  addRealExpense(): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/add-real-expense`, {}, { headers: this.getHeaders() });
   }
 }
