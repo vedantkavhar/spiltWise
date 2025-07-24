@@ -4,6 +4,17 @@ backend/.env
 backend/dist/
 backend/logs/
 
+# .NET Core (SpendWise.API)
+SpendWise.API/bin/
+SpendWise.API/obj/
+SpendWise.API/wwwroot/uploads/
+*.user
+*.suo
+*.cache
+*.dll
+*.pdb
+*.exe
+
 # Angular (frontend)
 frontend/node_modules/
 frontend/dist/
@@ -16,7 +27,7 @@ frontend/.env
 .DS_Store
 Thumbs.db
 
-# Optional: IDEs and editors
+# IDEs and editors
 .vscode/
 .idea/
 *.swp
