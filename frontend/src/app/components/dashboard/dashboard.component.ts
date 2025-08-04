@@ -45,6 +45,7 @@ export class DashboardComponent {
   filteredExpenses: Expense[] = [];
   totalPages: number = 1;
   totalExpenses: number = 0;
+  sidebarOpen: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -205,7 +206,7 @@ loadExpenses(): void {
   }
 
   getTotalExpenses(): number {
-    return this.totalExpenses;
+    return this.expenses.reduce((total, expense) => total + (expense.amount || 0), 0);
   }
 
   changePage(page: number) {
@@ -226,6 +227,10 @@ loadExpenses(): void {
 
   onPageSizeChange(): void {
     this.filterExpenses(true);
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
   }
 
   // get totalPages(): number {

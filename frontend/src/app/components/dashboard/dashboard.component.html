@@ -8,8 +8,13 @@
       <button class="action-btn logout-btn" (click)="logout()" title="Logout" aria-label="logout here">logout</button>
     </nav>
   </header>
+  <!-- Floating Toggle Button -->
+  <button class="sidebar-toggle" [class.sidebar-open]="sidebarOpen" (click)="toggleSidebar()" [title]="sidebarOpen ? 'Close Panel' : 'Add Expense'">
+    <span class="toggle-icon">{{ sidebarOpen ? '✕' : '+' }}</span>
+  </button>
+
   <div class="content-wrapper">
-    <aside class="sidebar">
+    <aside class="sidebar" [class.sidebar-open]="sidebarOpen">
       <div class="card form-card">
         <h3>{{ editingExpense ? 'Edit Expense' : 'Add Expense' }}</h3>
         <form (ngSubmit)="editingExpense ? updateExpense() : addExpense()" #expenseForm="ngForm">
@@ -80,7 +85,7 @@
         </form>
       </div>
     </aside>
-    <main class="main-content" role="main">
+    <main class="main-content" [class.main-content-full]="!sidebarOpen" role="main">
       <h2>Your Expenses</h2>
       <div *ngIf="error" class="error">{{ error }}</div>
       <div class="card">
