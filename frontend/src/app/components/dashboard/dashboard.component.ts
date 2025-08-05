@@ -144,6 +144,7 @@ loadExpenses(): void {
   editExpense(expense: Expense): void {
     this.editingExpense = expense;
     this.formExpense = this.expenseOperations.prepareEditExpense(expense);
+    this.sidebarOpen=true;
   }
   // Update an existing expense
   updateExpense(): void {
@@ -156,6 +157,8 @@ loadExpenses(): void {
         this.editingExpense = null;
         this.toastService.show('Expense updated successfully', 'success');
         this.error = '';
+        this.loading=false;
+        this.sidebarOpen=false;F
       },
       error: (err) => {
         this.error = err.error?.message || 'Failed to update expense';
