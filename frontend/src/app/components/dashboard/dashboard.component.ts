@@ -158,7 +158,7 @@ loadExpenses(): void {
         this.toastService.show('Expense updated successfully', 'success');
         this.error = '';
         this.loading=false;
-        this.sidebarOpen=false;F
+        this.sidebarOpen=false;
       },
       error: (err) => {
         this.error = err.error?.message || 'Failed to update expense';
